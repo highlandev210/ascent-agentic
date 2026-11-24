@@ -1,8 +1,9 @@
 import { cookies } from 'next/headers'
 import { NextRequest, NextResponse } from 'next/server'
+
 import {
-  saveCrunchbaseTokens,
-  type CrunchbaseTokens
+  type CrunchbaseTokens,
+  saveCrunchbaseTokens
 } from '@/lib/mcp/crunchbase'
 
 export const dynamic = 'force-dynamic'
@@ -15,9 +16,16 @@ export async function GET(request: NextRequest) {
   const errorDescription = searchParams.get('error_description')
 
   if (error) {
-    console.error('[Crunchbase Callback] OAuth error returned:', error, errorDescription)
+    console.error(
+      '[Crunchbase Callback] OAuth error returned:',
+      error,
+      errorDescription
+    )
     return NextResponse.redirect(
-      new URL(`/?mcp_error=${encodeURIComponent(errorDescription || error)}`, request.url)
+      new URL(
+        `/?mcp_error=${encodeURIComponent(errorDescription || error)}`,
+        request.url
+      )
     )
   }
 
@@ -39,7 +47,10 @@ export async function GET(request: NextRequest) {
   if (!storedVerifier) {
     console.error('[Crunchbase Callback] Missing code_verifier in cookies')
     return NextResponse.json(
-      { error: 'OAuth session expired. Please restart the authorization flow at /api/mcp/crunchbase/auth' },
+      {
+        error:
+          'OAuth session expired. Please restart the authorization flow at /api/mcp/crunchbase/auth'
+      },
       { status: 400 }
     )
   }
@@ -70,7 +81,11 @@ export async function GET(request: NextRequest) {
 
     if (!tokenRes.ok) {
       const errBody = await tokenRes.text()
-      console.error('[Crunchbase Callback] Token exchange failed:', tokenRes.status, errBody)
+      console.error(
+        '[Crunchbase Callback] Token exchange failed:',
+        tokenRes.status,
+        errBody
+      )
       return NextResponse.json(
         { error: `Token exchange failed: ${errBody}` },
         { status: tokenRes.status }
@@ -92,9 +107,14 @@ export async function GET(request: NextRequest) {
     cookieStore.delete('cb_pkce_verifier')
     cookieStore.delete('cb_oauth_state')
 
-    return NextResponse.redirect(new URL('/?mcp=crunchbase_connected', request.url))
+    return NextResponse.redirect(
+      new URL('/?mcp=crunchbase_connected', request.url)
+    )
   } catch (err: any) {
-    console.error('[Crunchbase Callback] Unexpected error during token exchange:', err)
+    console.error(
+      '[Crunchbase Callback] Unexpected error during token exchange:',
+      err
+    )
     return NextResponse.json(
       { error: err?.message || 'Unexpected error during token exchange' },
       { status: 500 }

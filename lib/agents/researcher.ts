@@ -1,7 +1,10 @@
 import { isStepCount, tool, ToolLoopAgent } from 'ai'
 
 import type { DraftVersion } from '@/lib/draft/draft'
-import { createCrunchbaseTools, isCrunchbaseConnected } from '@/lib/mcp/crunchbase'
+import {
+  createCrunchbaseTools,
+  isCrunchbaseConnected
+} from '@/lib/mcp/crunchbase'
 import { createKnowledgeTools, isKnowledgeConnected } from '@/lib/mcp/knowledge'
 import type {
   ResearcherRuntimeContext,

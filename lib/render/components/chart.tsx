@@ -1,7 +1,9 @@
 'use client'
 
 import React, { useState } from 'react'
+
 import type { ComponentFn } from '@json-render/react'
+
 import type { CatalogType } from './shared'
 
 export const Chart: ComponentFn<CatalogType, 'Chart'> = ({ props }) => {
@@ -55,7 +57,9 @@ export const Chart: ComponentFn<CatalogType, 'Chart'> = ({ props }) => {
                     {item.label}
                   </span>
                   <div className="flex items-center gap-1.5 font-mono font-medium">
-                    <span className="text-foreground">{formatValue(item.value)}</span>
+                    <span className="text-foreground">
+                      {formatValue(item.value)}
+                    </span>
                     {item.annotation && (
                       <span className="text-[10px] text-muted-foreground bg-muted px-1.5 py-0.5 rounded">
                         {item.annotation}
@@ -84,41 +88,43 @@ export const Chart: ComponentFn<CatalogType, 'Chart'> = ({ props }) => {
         <div className="flex flex-col sm:flex-row items-center justify-around gap-4 pt-2">
           <div className="relative size-32 shrink-0">
             <svg viewBox="0 0 36 36" className="size-full -rotate-90">
-              {data.reduce(
-                (acc, item, idx) => {
-                  const total = data.reduce((sum, d) => sum + d.value, 0)
-                  const pct = (item.value / (total || 1)) * 100
-                  const colors = [
-                    '#3b82f6',
-                    '#10b981',
-                    '#8b5cf6',
-                    '#f59e0b',
-                    '#ec4899',
-                    '#06b6d4'
-                  ]
-                  const color = colors[idx % colors.length]
+              {
+                data.reduce(
+                  (acc, item, idx) => {
+                    const total = data.reduce((sum, d) => sum + d.value, 0)
+                    const pct = (item.value / (total || 1)) * 100
+                    const colors = [
+                      '#3b82f6',
+                      '#10b981',
+                      '#8b5cf6',
+                      '#f59e0b',
+                      '#ec4899',
+                      '#06b6d4'
+                    ]
+                    const color = colors[idx % colors.length]
 
-                  acc.elements.push(
-                    <circle
-                      key={idx}
-                      cx="18"
-                      cy="18"
-                      r="14"
-                      fill="transparent"
-                      stroke={color}
-                      strokeWidth="5"
-                      strokeDasharray={`${pct} ${100 - pct}`}
-                      strokeDashoffset={-acc.offset}
-                      className="transition-all duration-300 hover:opacity-80 cursor-pointer"
-                      onMouseEnter={() => setHoveredIdx(idx)}
-                      onMouseLeave={() => setHoveredIdx(null)}
-                    />
-                  )
-                  acc.offset += pct
-                  return acc
-                },
-                { elements: [] as React.ReactNode[], offset: 0 }
-              ).elements}
+                    acc.elements.push(
+                      <circle
+                        key={idx}
+                        cx="18"
+                        cy="18"
+                        r="14"
+                        fill="transparent"
+                        stroke={color}
+                        strokeWidth="5"
+                        strokeDasharray={`${pct} ${100 - pct}`}
+                        strokeDashoffset={-acc.offset}
+                        className="transition-all duration-300 hover:opacity-80 cursor-pointer"
+                        onMouseEnter={() => setHoveredIdx(idx)}
+                        onMouseLeave={() => setHoveredIdx(null)}
+                      />
+                    )
+                    acc.offset += pct
+                    return acc
+                  },
+                  { elements: [] as React.ReactNode[], offset: 0 }
+                ).elements
+              }
             </svg>
             <div className="absolute inset-0 flex flex-col items-center justify-center text-center pointer-events-none">
               <span className="text-[10px] text-muted-foreground uppercase font-mono">
@@ -151,7 +157,9 @@ export const Chart: ComponentFn<CatalogType, 'Chart'> = ({ props }) => {
                   onMouseLeave={() => setHoveredIdx(null)}
                 >
                   <div className="flex items-center gap-2 truncate">
-                    <span className={`size-2.5 rounded-full ${colors[idx % colors.length]}`} />
+                    <span
+                      className={`size-2.5 rounded-full ${colors[idx % colors.length]}`}
+                    />
                     <span className="truncate">{item.label}</span>
                   </div>
                   <span className="font-mono text-muted-foreground ml-2">
@@ -168,11 +176,23 @@ export const Chart: ComponentFn<CatalogType, 'Chart'> = ({ props }) => {
       {type === 'line' && (
         <div className="pt-2">
           <div className="relative h-36 w-full">
-            <svg viewBox="0 0 100 50" preserveAspectRatio="none" className="size-full overflow-visible">
+            <svg
+              viewBox="0 0 100 50"
+              preserveAspectRatio="none"
+              className="size-full overflow-visible"
+            >
               <defs>
                 <linearGradient id="lineGrad" x1="0" y1="0" x2="0" y2="1">
-                  <stop offset="0%" stopColor="hsl(var(--primary))" stopOpacity="0.35" />
-                  <stop offset="100%" stopColor="hsl(var(--primary))" stopOpacity="0.0" />
+                  <stop
+                    offset="0%"
+                    stopColor="hsl(var(--primary))"
+                    stopOpacity="0.35"
+                  />
+                  <stop
+                    offset="100%"
+                    stopColor="hsl(var(--primary))"
+                    stopOpacity="0.0"
+                  />
                 </linearGradient>
               </defs>
               {/* Area */}

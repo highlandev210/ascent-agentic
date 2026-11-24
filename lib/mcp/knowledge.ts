@@ -216,7 +216,9 @@ export function createKnowledgeTools(): Record<string, any> {
         'Locate an exact quotation of 3–512 UTF-8 bytes in selected packs with byte-level verification.',
       inputSchema: z.object({
         pack_refs: z.array(z.string()).describe('Selected pack references'),
-        phrase: z.string().describe('Exact phrase to search (3–512 UTF-8 bytes)'),
+        phrase: z
+          .string()
+          .describe('Exact phrase to search (3–512 UTF-8 bytes)'),
         as_of: z
           .string()
           .optional()
@@ -252,7 +254,10 @@ export function createKnowledgeTools(): Record<string, any> {
         pack_ref: z
           .string()
           .describe('Pack reference (e.g. sea-ev-penetration@...)'),
-        country: z.string().default('MY').describe('Country code (default: MY)'),
+        country: z
+          .string()
+          .default('MY')
+          .describe('Country code (default: MY)'),
         vehicle_class: z
           .string()
           .default('car')

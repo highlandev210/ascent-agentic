@@ -127,8 +127,7 @@ export const catalog = schema.createCatalog({
           })
         )
       }),
-      description:
-        'A responsive grid of key financial or startup metric cards.'
+      description: 'A responsive grid of key financial or startup metric cards.'
     }
   },
   actions: {

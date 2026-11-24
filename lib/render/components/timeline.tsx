@@ -1,7 +1,9 @@
 'use client'
 
 import React from 'react'
+
 import type { ComponentFn } from '@json-render/react'
+
 import type { CatalogType } from './shared'
 
 export const Timeline: ComponentFn<CatalogType, 'Timeline'> = ({ props }) => {

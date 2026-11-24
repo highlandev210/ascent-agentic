@@ -120,10 +120,13 @@ export async function callCrunchbaseMCP(
 ): Promise<unknown> {
   const accessToken = await getValidAccessToken()
   if (!accessToken) {
-    throw new Error('Crunchbase MCP is not authenticated. Visit /api/mcp/crunchbase/auth to connect.')
+    throw new Error(
+      'Crunchbase MCP is not authenticated. Visit /api/mcp/crunchbase/auth to connect.'
+    )
   }
 
-  const endpoint = process.env.CRUNCHBASE_MCP_URL || 'https://mcp.crunchbase.com'
+  const endpoint =
+    process.env.CRUNCHBASE_MCP_URL || 'https://mcp.crunchbase.com'
 
   const res = await fetch(endpoint, {
     method: 'POST',
@@ -162,7 +165,9 @@ export async function callCrunchbaseMCP(
   }
 
   if (json.error) {
-    throw new Error(`Crunchbase MCP Error: ${json.error.message || JSON.stringify(json.error)}`)
+    throw new Error(
+      `Crunchbase MCP Error: ${json.error.message || JSON.stringify(json.error)}`
+    )
   }
 
   return json.result
@@ -191,7 +196,9 @@ export function createCrunchbaseTools(): Record<string, any> {
       inputSchema: z.object({
         question: z
           .string()
-          .describe('Natural language question to ask Crunchbase about companies, funding, or investors.')
+          .describe(
+            'Natural language question to ask Crunchbase about companies, funding, or investors.'
+          )
       }),
       execute: async ({ question }) => {
         try {
@@ -211,11 +218,17 @@ export function createCrunchbaseTools(): Record<string, any> {
       description:
         'Resolve and disambiguate a company name or domain in Crunchbase to its canonical profile and funding overview.',
       inputSchema: z.object({
-        name: z.string().describe('Company or organization name (e.g. "Stripe", "Databricks").'),
+        name: z
+          .string()
+          .describe(
+            'Company or organization name (e.g. "Stripe", "Databricks").'
+          ),
         domains: z
           .array(z.string())
           .optional()
-          .describe('Optional website domain(s) for higher accuracy (e.g. ["stripe.com"]).')
+          .describe(
+            'Optional website domain(s) for higher accuracy (e.g. ["stripe.com"]).'
+          )
       }),
       execute: async ({ name, domains }) => {
         try {
@@ -237,11 +250,15 @@ export function createCrunchbaseTools(): Record<string, any> {
       inputSchema: z.object({
         entity_id: z
           .string()
-          .describe('The permalink or UUID of the entity (e.g. "stripe" or "anthropic").'),
+          .describe(
+            'The permalink or UUID of the entity (e.g. "stripe" or "anthropic").'
+          ),
         entity_def_id: z
           .string()
           .default('organization')
-          .describe('Entity definition type: "organization", "person", "funding_round", etc.')
+          .describe(
+            'Entity definition type: "organization", "person", "funding_round", etc.'
+          )
       }),
       execute: async ({ entity_id, entity_def_id }) => {
         try {

@@ -1,6 +1,8 @@
 import { cookies } from 'next/headers'
 import { NextRequest, NextResponse } from 'next/server'
+
 import crypto from 'crypto'
+
 import { createPKCE, isCrunchbaseConfigured } from '@/lib/mcp/crunchbase'
 
 export const dynamic = 'force-dynamic'

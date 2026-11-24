@@ -1,12 +1,14 @@
 'use client'
 
 import React from 'react'
+
 import type { ComponentFn } from '@json-render/react'
 import {
-  IconArrowUpRight as ArrowUpRight,
   IconArrowDownRight as ArrowDownRight,
+  IconArrowUpRight as ArrowUpRight,
   IconMinus as Minus
 } from '@tabler/icons-react'
+
 import type { CatalogType } from './shared'
 
 export const StatGrid: ComponentFn<CatalogType, 'StatGrid'> = ({ props }) => {
@@ -36,12 +38,14 @@ export const StatGrid: ComponentFn<CatalogType, 'StatGrid'> = ({ props }) => {
                   stat.trend === 'up'
                     ? 'text-emerald-500'
                     : stat.trend === 'down'
-                    ? 'text-rose-500'
-                    : 'text-muted-foreground'
+                      ? 'text-rose-500'
+                      : 'text-muted-foreground'
                 }`}
               >
                 {stat.trend === 'up' && <ArrowUpRight className="size-3.5" />}
-                {stat.trend === 'down' && <ArrowDownRight className="size-3.5" />}
+                {stat.trend === 'down' && (
+                  <ArrowDownRight className="size-3.5" />
+                )}
                 {stat.trend === 'neutral' && <Minus className="size-3.5" />}
               </span>
             )}
