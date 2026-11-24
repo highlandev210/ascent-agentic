@@ -1,19 +1,20 @@
 import { NextRequest, NextResponse } from 'next/server'
 
-import { SPACE_COLOR_COOKIE } from '@/components/spaces/space-colors'
 import { getCurrentUserId } from '@/lib/auth/get-current-user'
 import {
   searchChatContent,
   searchChatReasoning,
   searchChatTitles
 } from '@/lib/db/actions'
-import { resolveSpaceThreadFilter } from '@/lib/spaces/active-space-filter'
 import { stripHighlightMarkers } from '@/lib/render/highlight-markers'
+import { resolveSpaceThreadFilter } from '@/lib/spaces/active-space-filter'
 import {
   effectiveQueryLength,
   MIN_QUERY_LENGTH,
   normalizeSearchQuery
 } from '@/lib/utils/search-query'
+
+import { SPACE_COLOR_COOKIE } from '@/components/spaces/space-colors'
 const TITLE_LIMIT = 20
 const CONTENT_LIMIT = 20
 const REASONING_LIMIT = 10

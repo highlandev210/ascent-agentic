@@ -24,6 +24,8 @@ import {
   CommandList
 } from '@/components/ui/command'
 
+import { useSpaces } from '@/components/spaces/spaces-provider'
+
 import { ChatHistorySkeleton } from './chat-history-skeleton'
 
 const DEBOUNCE_MS = 250
@@ -82,6 +84,8 @@ export function ChatHistorySearch({
   onActiveValueChange
 }: ChatHistorySearchProps) {
   const router = useRouter()
+  // Search is scoped to the active space, matching the chronological list.
+  const { active: activeSpace } = useSpaces()
   const [results, setResults] = useState<SearchResponse | null>(null)
   const [isSearching, setIsSearching] = useState(false)
   const [thinkingRequested, setThinkingRequested] = useState(false)
@@ -150,7 +154,7 @@ export function ChatHistorySearch({
     const timer = setTimeout(async () => {
       try {
         const response = await fetch(
-          `/api/search?q=${encodeURIComponent(trimmed)}`,
+          `/api/search?q=${encodeURIComponent(trimmed)}&space=${activeSpace}`,
           { signal: controller.signal }
         )
         if (!response.ok) {
@@ -185,7 +189,7 @@ export function ChatHistorySearch({
       clearTimeout(timer)
       controller.abort()
     }
-  }, [query, refreshKey, onActiveValueChange])
+  }, [query, refreshKey, onActiveValueChange, activeSpace])
 
   const handleSearchThinking = useCallback(async () => {
     const trimmed = normalizeSearchQuery(query)
@@ -202,7 +206,7 @@ export function ChatHistorySearch({
 
     try {
       const response = await fetch(
-        `/api/search?q=${encodeURIComponent(trimmed)}&include=reasoning`,
+        `/api/search?q=${encodeURIComponent(trimmed)}&include=reasoning&space=${activeSpace}`,
         { signal: controller.signal }
       )
       if (!response.ok) {
@@ -228,7 +232,7 @@ export function ChatHistorySearch({
         setIsSearchingThinking(false)
       }
     }
-  }, [query])
+  }, [query, activeSpace])
 
   // When the parent signals that chat data changed, refresh thinking matches
   // too if the opt-in is active (the main fetch effect refreshes title and

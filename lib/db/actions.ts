@@ -379,7 +379,9 @@ export async function getChatsPage(
         ? userCond
         : and(
             userCond,
-            spaceId === null ? isNull(chats.spaceId) : eq(chats.spaceId, spaceId)
+            spaceId === null
+              ? isNull(chats.spaceId)
+              : eq(chats.spaceId, spaceId)
           )
     return withRLS(userId, async tx => {
       const results = await tx

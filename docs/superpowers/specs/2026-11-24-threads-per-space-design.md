@@ -82,6 +82,7 @@ Behavioral decisions (1–3 are the model's calls, confirmed by the user;
 4. **Strictly per-space**, no combined "All" view.
 
 Resolution rule for the active space → filter:
+
 - Read the `spaceColor` cookie (or the explicit request param).
 - If it is missing or `DEFAULT_SPACE_COLOR` → filter `spaceId IS NULL`.
 - Otherwise look up the user's space of that color; filter
@@ -89,6 +90,7 @@ Resolution rule for the active space → filter:
   filter matches nothing (empty list), which is correct.
 
 Touch points (exact files/lines to be finalized in the plan):
+
 - `lib/db/actions.ts`: add a `spaceId` filter to `getChatsPage`,
   `searchChatTitles`, `searchChatContent`, `searchChatReasoning`
   (null → `isNull(chats.spaceId)`, else `eq(chats.spaceId, id)`).

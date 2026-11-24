@@ -137,20 +137,22 @@ export default async function RootLayout({
                       initialUsage={initialUsage}
                       enabled={usageBudgetEnabled}
                     >
-                      {userId && <AppSidebar user={user} />}
-                      <KeyboardShortcutHandler />
-                      <div className="flex flex-col flex-1 min-w-0">
-                        <Header user={user} />
-                        <main className="flex flex-1 min-h-0 min-w-0 overflow-hidden">
-                          <SpacesProvider
-                            key={userId ?? 'guest'}
-                            enabled={!!userId}
-                            initialColor={initialSpaceColor}
-                          >
+                      {/* Wraps the sidebar too, so the thread list can read
+                          the active space and refetch when it switches. */}
+                      <SpacesProvider
+                        key={userId ?? 'guest'}
+                        enabled={!!userId}
+                        initialColor={initialSpaceColor}
+                      >
+                        {userId && <AppSidebar user={user} />}
+                        <KeyboardShortcutHandler />
+                        <div className="flex flex-col flex-1 min-w-0">
+                          <Header user={user} />
+                          <main className="flex flex-1 min-h-0 min-w-0 overflow-hidden">
                             <ArtifactRoot>{children}</ArtifactRoot>
-                          </SpacesProvider>
-                        </main>
-                      </div>
+                          </main>
+                        </div>
+                      </SpacesProvider>
                     </UsageBudgetProvider>
                   </LibraryProvider>
                 </SidebarProvider>

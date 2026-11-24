@@ -42,3 +42,6 @@ _local/
 
 # claude code local state (settings, launch config, worktrees)
 .claude/
+
+# superpowers plan workspace (ledger, briefs, scratch) — not committed
+.superpowers/

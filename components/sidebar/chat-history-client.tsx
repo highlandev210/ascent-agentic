@@ -18,6 +18,8 @@ import {
   SidebarMenu
 } from '@/components/ui/sidebar'
 
+import { useSpaces } from '@/components/spaces/spaces-provider'
+
 import { ChatHistorySearch } from './chat-history-search'
 import { ChatHistorySkeleton } from './chat-history-skeleton'
 import { ChatMenuItem } from './chat-menu-item'
@@ -33,6 +35,8 @@ interface ChatPageResponse {
 // the results view.
 
 export function ChatHistoryClient() {
+  // The sidebar lists only the active space's threads; a switch refetches.
+  const { active: activeSpace } = useSpaces()
   const [chats, setChats] = useState<DBChat[]>([])
   const [nextOffset, setNextOffset] = useState<number | null>(null)
   const [isLoading, setIsLoading] = useState(true)
@@ -118,7 +122,9 @@ export function ChatHistoryClient() {
     refreshInFlightRef.current = true
     setIsLoading(true)
     try {
-      const response = await fetch(`/api/chats?offset=0&limit=20`)
+      const response = await fetch(
+        `/api/chats?offset=0&limit=20&space=${activeSpace}`
+      )
       if (!response.ok) {
         throw new Error('Failed to fetch initial chat history')
       }
@@ -141,7 +147,7 @@ export function ChatHistoryClient() {
         setIsLoading(false)
       }
     }
-  }, [])
+  }, [activeSpace])
 
   useEffect(() => {
     fetchInitialChats()
@@ -223,7 +229,9 @@ export function ChatHistoryClient() {
     const seq = ++listRequestSeqRef.current
     setIsLoading(true)
     try {
-      const response = await fetch(`/api/chats?offset=${nextOffset}&limit=20`)
+      const response = await fetch(
+        `/api/chats?offset=${nextOffset}&limit=20&space=${activeSpace}`
+      )
       if (!response.ok) {
         throw new Error('Failed to fetch more chat history')
       }
@@ -241,7 +249,7 @@ export function ChatHistoryClient() {
     } finally {
       if (seq === listRequestSeqRef.current) setIsLoading(false)
     }
-  }, [nextOffset, isLoading])
+  }, [nextOffset, isLoading, activeSpace])
 
   useEffect(() => {
     const observerRefValue = loadMoreRef.current

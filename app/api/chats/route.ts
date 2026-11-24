@@ -1,8 +1,9 @@
 import { NextRequest, NextResponse } from 'next/server'
 
-import { SPACE_COLOR_COOKIE } from '@/components/spaces/space-colors'
 import { getChatsPage } from '@/lib/actions/chat'
 import { Chat as DBChat } from '@/lib/db/schema'
+
+import { SPACE_COLOR_COOKIE } from '@/components/spaces/space-colors'
 
 interface ChatPageResponse {
   chats: DBChat[]

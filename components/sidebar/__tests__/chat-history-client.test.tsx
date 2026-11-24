@@ -4,9 +4,14 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import { ChatHistoryClient } from '../chat-history-client'
 
 const pushMock = vi.hoisted(() => vi.fn())
+const spaceActive = vi.hoisted(() => ({ current: 'black' }))
 
 vi.mock('next/navigation', () => ({
   useRouter: () => ({ push: pushMock })
+}))
+
+vi.mock('@/components/spaces/spaces-provider', () => ({
+  useSpaces: () => ({ active: spaceActive.current })
 }))
 
 vi.mock('../chat-menu-item', () => ({
@@ -823,5 +828,61 @@ describe('ChatHistoryClient search mode', () => {
     expect(calledWith(fetchMock, '/api/search?q=mat&include=reasoning')).toBe(
       true
     )
+  })
+})
+
+function fetchedWithSpace(
+  fetchMock: ReturnType<typeof mockFetch>,
+  prefix: string,
+  color: string
+) {
+  return fetchMock.mock.calls.some(([url]) => {
+    const u = String(url)
+    return u.startsWith(prefix) && u.includes(`space=${color}`)
+  })
+}
+
+describe('ChatHistoryClient space scoping', () => {
+  beforeEach(() => {
+    vi.useFakeTimers()
+    vi.clearAllMocks()
+    spaceActive.current = 'black'
+  })
+
+  afterEach(() => {
+    vi.useRealTimers()
+    vi.unstubAllGlobals()
+  })
+
+  it('includes the active space in the list fetch', async () => {
+    spaceActive.current = 'blue'
+    const fetchMock = mockFetch()
+    render(<ChatHistoryClient />)
+    await flush(50)
+
+    expect(fetchedWithSpace(fetchMock, '/api/chats', 'blue')).toBe(true)
+  })
+
+  it('includes the active space in the search fetch', async () => {
+    spaceActive.current = 'blue'
+    const fetchMock = mockFetch()
+    render(<ChatHistoryClient />)
+    await flush(50)
+
+    await typeInSearch('mat')
+
+    expect(fetchedWithSpace(fetchMock, '/api/search', 'blue')).toBe(true)
+  })
+
+  it('refetches the list with the new space when the active space changes', async () => {
+    const fetchMock = mockFetch()
+    const { rerender } = render(<ChatHistoryClient />)
+    await flush(50)
+
+    spaceActive.current = 'green'
+    rerender(<ChatHistoryClient />)
+    await flush(50)
+
+    expect(fetchedWithSpace(fetchMock, '/api/chats', 'green')).toBe(true)
   })
 })

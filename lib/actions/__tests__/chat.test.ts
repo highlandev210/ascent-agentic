@@ -133,7 +133,9 @@ describe('Chat Actions', () => {
       const result = await getChatsPage(20, 0)
 
       expect(result).toEqual(mockResult)
-      expect(dbActions.getChatsPage).toHaveBeenCalledWith(userId, 20, 0)
+      // The active space resolves to the Default space (null) with no
+      // color argument, so the list is scoped to space-less chats.
+      expect(dbActions.getChatsPage).toHaveBeenCalledWith(userId, 20, 0, null)
     })
 
     it('should return empty result for unauthenticated user', async () => {

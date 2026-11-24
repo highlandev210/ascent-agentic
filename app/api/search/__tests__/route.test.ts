@@ -95,15 +95,18 @@ describe('Search API Route', () => {
 
     const response = await GET(makeRequest('frost'))
 
+    // No active space set resolves to the Default space (null).
     expect(dbActions.searchChatTitles).toHaveBeenCalledWith(
       'user-1',
       'frost',
-      20
+      20,
+      null
     )
     expect(dbActions.searchChatContent).toHaveBeenCalledWith(
       'user-1',
       'frost',
-      20
+      20,
+      null
     )
     await expect(response.json()).resolves.toEqual({
       title: [{ chatId: 'chat-1', title: 'Robert Frost Readings' }],
@@ -140,7 +143,8 @@ describe('Search API Route', () => {
     expect(dbActions.searchChatReasoning).toHaveBeenCalledWith(
       'user-1',
       'frost',
-      10
+      10,
+      null
     )
     const body = await response.json()
     expect(body.thinking).toEqual([
