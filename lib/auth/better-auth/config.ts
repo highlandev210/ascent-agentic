@@ -410,7 +410,7 @@ function createAuth() {
   // deliver it to the browser without a hand-written header copy.
 
   return betterAuth({
-    appName: 'Morphic',
+    appName: 'Ascent',
     secret: getSecret(),
     database: drizzleAdapter(db, { provider: 'pg', schema: authSchema }),
     emailAndPassword: {
@@ -440,7 +440,7 @@ function createAuth() {
             const link = `${origin}/auth/update-password?token=${token}`
             await sendSmtpMail({
               to: user.email,
-              subject: 'Reset your Morphic password',
+              subject: 'Reset your Ascent password',
               text: `Use this link to reset your password (valid for one hour): ${link}`,
               html: `<p>Use this link to reset your password (valid for one hour):</p><p><a href="${link}">Reset password</a></p>`
             })

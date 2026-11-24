@@ -36,7 +36,7 @@ export default function AppSidebar({ user }: { user?: AppUser | null }) {
       <SidebarHeader className="flex flex-row justify-between items-center">
         <HomeLink className="flex items-center gap-2 px-2 py-3">
           <IconLogo className={cn('size-5')} />
-          <span className="font-semibold text-sm">Morphic</span>
+          <span className="font-semibold text-sm">Ascent</span>
         </HomeLink>
         <SidebarTrigger />
       </SidebarHeader>

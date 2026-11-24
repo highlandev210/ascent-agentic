@@ -440,7 +440,7 @@ export const betterAuthProvider: AuthProvider = {
             try {
               await sendSmtpMail({
                 to: email,
-                subject: 'Finish creating your Morphic admin account',
+                subject: 'Finish creating your Ascent admin account',
                 text: `Use this link to finish creating the admin account for ${email} (valid for one week): ${origin}/auth/sign-up?token=${inviteToken}`,
                 html: `<p>Use this link to finish creating the admin account for ${email} (valid for one week):</p><p><a href="${origin}/auth/sign-up?token=${inviteToken}">Complete sign-up</a></p>`
               })
