@@ -1,11 +1,13 @@
 import { NextRequest, NextResponse } from 'next/server'
 
+import { SPACE_COLOR_COOKIE } from '@/components/spaces/space-colors'
 import { getCurrentUserId } from '@/lib/auth/get-current-user'
 import {
   searchChatContent,
   searchChatReasoning,
   searchChatTitles
 } from '@/lib/db/actions'
+import { resolveSpaceThreadFilter } from '@/lib/spaces/active-space-filter'
 import { stripHighlightMarkers } from '@/lib/render/highlight-markers'
 import {
   effectiveQueryLength,
@@ -66,14 +68,24 @@ export async function GET(request: NextRequest) {
     return NextResponse.json<SearchResponse>(emptyResponse)
   }
 
+  const space =
+    searchParams.get('space') ??
+    request.cookies.get(SPACE_COLOR_COOKIE)?.value ??
+    null
+  const spaceFilter = await resolveSpaceThreadFilter(userId, space)
+  if ('empty' in spaceFilter) {
+    return NextResponse.json<SearchResponse>(emptyResponse)
+  }
+  const { spaceId } = spaceFilter
+
   try {
     const includeReasoning = searchParams.get('include') === 'reasoning'
 
     const [titleChats, contentMatches, reasoningMatches] = await Promise.all([
-      searchChatTitles(userId, query, TITLE_LIMIT),
-      searchChatContent(userId, query, CONTENT_LIMIT),
+      searchChatTitles(userId, query, TITLE_LIMIT, spaceId),
+      searchChatContent(userId, query, CONTENT_LIMIT, spaceId),
       includeReasoning
-        ? searchChatReasoning(userId, query, REASONING_LIMIT)
+        ? searchChatReasoning(userId, query, REASONING_LIMIT, spaceId)
         : Promise.resolve(null)
     ])
 

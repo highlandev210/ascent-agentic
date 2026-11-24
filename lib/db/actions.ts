@@ -409,7 +409,9 @@ export async function getChatsPage(
 export async function searchChatTitles(
   userId: string,
   query: string,
-  limit = 20
+  limit = 20,
+  // undefined = no space filter; null = the Default space; a string = that space.
+  spaceId?: string | null
 ): Promise<Chat[]> {
   const trimmed = normalizeSearchQuery(query)
   if (!trimmed) {
@@ -418,11 +420,18 @@ export async function searchChatTitles(
   // Escape ILIKE wildcards so user input matches literally
   const pattern = `%${escapeLikePattern(trimmed)}%`
 
+  const conds = [eq(chats.userId, userId), ilike(chats.title, pattern)]
+  if (spaceId !== undefined) {
+    conds.push(
+      spaceId === null ? isNull(chats.spaceId) : eq(chats.spaceId, spaceId)
+    )
+  }
+
   return withRLS(userId, async tx => {
     return tx
       .select()
       .from(chats)
-      .where(and(eq(chats.userId, userId), ilike(chats.title, pattern)))
+      .where(and(...conds))
       .orderBy(desc(chats.createdAt))
       .limit(Math.max(1, Math.min(limit, 50)))
   })
@@ -465,7 +474,9 @@ async function searchChatParts(
   userId: string,
   query: string,
   limit: number,
-  scope: FtsSearchScope
+  scope: FtsSearchScope,
+  // undefined = no space filter; null = the Default space; a string = that space.
+  spaceId?: string | null
 ): Promise<ChatContentSearchResult[]> {
   const trimmed = normalizeSearchQuery(query)
   if (!trimmed) {
@@ -476,6 +487,12 @@ async function searchChatParts(
   const tsvectorCol = sql.identifier(tsvectorColumn)
   const textCol = sql.identifier(textColumn)
   const pageLimit = Math.max(1, Math.min(limit, 50))
+  const spaceCond =
+    spaceId === undefined
+      ? sql``
+      : spaceId === null
+        ? sql` AND c.space_id IS NULL`
+        : sql` AND c.space_id = ${spaceId}`
 
   return withRLS(userId, async tx => {
     const rows = await tx.execute<{
@@ -513,7 +530,7 @@ async function searchChatParts(
         JOIN ${messages} msg ON msg.id = p.message_id
         JOIN ${chats} c ON c.id = msg.chat_id
         WHERE c.user_id = ${userId}
-          AND p.${tsvectorCol} @@ fts_query.q
+          AND p.${tsvectorCol} @@ fts_query.q${spaceCond}
         ORDER BY c.id, match_rank DESC, p.id
       )
       SELECT chat_id, title, snippet
@@ -536,9 +553,10 @@ async function searchChatParts(
 export async function searchChatContent(
   userId: string,
   query: string,
-  limit = 20
+  limit = 20,
+  spaceId?: string | null
 ): Promise<ChatContentSearchResult[]> {
-  return searchChatParts(userId, query, limit, 'content')
+  return searchChatParts(userId, query, limit, 'content', spaceId)
 }
 
 /**
@@ -547,9 +565,10 @@ export async function searchChatContent(
 export async function searchChatReasoning(
   userId: string,
   query: string,
-  limit = 10
+  limit = 10,
+  spaceId?: string | null
 ): Promise<ChatContentSearchResult[]> {
-  return searchChatParts(userId, query, limit, 'reasoning')
+  return searchChatParts(userId, query, limit, 'reasoning', spaceId)
 }
 
 /**

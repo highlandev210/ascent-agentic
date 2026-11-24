@@ -315,3 +315,66 @@ describe('searchChatReasoning', () => {
     expect(rendered.params).toContain('user-1')
   })
 })
+
+describe('search space scoping', () => {
+  beforeEach(() => {
+    vi.clearAllMocks()
+  })
+
+  it('searchChatTitles scopes to a space id', async () => {
+    const { where } = mockTitleQuery([])
+
+    await searchChatTitles('user-1', 'frost', 20, 's1')
+
+    const rendered = dialect.sqlToQuery(where.mock.calls[0][0])
+    expect(rendered.sql).toContain('"space_id" =')
+    expect(rendered.params).toContain('s1')
+  })
+
+  it('searchChatTitles scopes to the Default space (IS NULL)', async () => {
+    const { where } = mockTitleQuery([])
+
+    await searchChatTitles('user-1', 'frost', 20, null)
+
+    const rendered = dialect.sqlToQuery(where.mock.calls[0][0])
+    expect(rendered.sql).toContain('"space_id" is null')
+  })
+
+  it('searchChatContent scopes to a space id', async () => {
+    const execute = mockExecute([])
+
+    await searchChatContent('user-1', 'woods', 20, 's1')
+
+    const rendered = dialect.sqlToQuery(execute.mock.calls[0][0])
+    expect(rendered.sql).toContain('c.space_id =')
+    expect(rendered.params).toContain('s1')
+  })
+
+  it('searchChatContent scopes to the Default space (IS NULL)', async () => {
+    const execute = mockExecute([])
+
+    await searchChatContent('user-1', 'woods', 20, null)
+
+    const rendered = dialect.sqlToQuery(execute.mock.calls[0][0])
+    expect(rendered.sql).toContain('c.space_id IS NULL')
+  })
+
+  it('searchChatReasoning scopes to a space id', async () => {
+    const execute = mockExecute([])
+
+    await searchChatReasoning('user-1', 'quasars', 10, 's1')
+
+    const rendered = dialect.sqlToQuery(execute.mock.calls[0][0])
+    expect(rendered.sql).toContain('c.space_id =')
+    expect(rendered.params).toContain('s1')
+  })
+
+  it('does not scope by space when spaceId is undefined', async () => {
+    const execute = mockExecute([])
+
+    await searchChatContent('user-1', 'woods', 20)
+
+    const rendered = dialect.sqlToQuery(execute.mock.calls[0][0])
+    expect(rendered.sql).not.toContain('space_id')
+  })
+})
