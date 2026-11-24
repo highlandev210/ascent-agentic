@@ -8,6 +8,7 @@ import {
   gt,
   ilike,
   inArray,
+  isNull,
   lt,
   or,
   sql
@@ -366,14 +367,25 @@ export async function getChats(userId: string): Promise<Chat[]> {
 export async function getChatsPage(
   userId: string,
   limit = 20,
-  offset = 0
+  offset = 0,
+  // undefined = no space filter (back-compat); null = the Default space
+  // (chats with no space); a string = that space's id.
+  spaceId?: string | null
 ): Promise<{ chats: Chat[]; nextOffset: number | null }> {
   try {
+    const userCond = eq(chats.userId, userId)
+    const whereCond =
+      spaceId === undefined
+        ? userCond
+        : and(
+            userCond,
+            spaceId === null ? isNull(chats.spaceId) : eq(chats.spaceId, spaceId)
+          )
     return withRLS(userId, async tx => {
       const results = await tx
         .select()
         .from(chats)
-        .where(eq(chats.userId, userId))
+        .where(whereCond)
         .orderBy(desc(chats.createdAt))
         .limit(limit)
         .offset(offset)

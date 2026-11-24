@@ -6,6 +6,7 @@ import { getAuthProvider, isShareEnabled } from '@/lib/auth/provider'
 import * as dbActions from '@/lib/db/actions'
 import type { Chat, Message } from '@/lib/db/schema'
 import { generateId } from '@/lib/db/schema'
+import { resolveSpaceThreadFilter } from '@/lib/spaces/active-space-filter'
 import {
   getUserFileObjectKeyPrefix,
   signFilePartUrlsInMessages
@@ -41,14 +42,25 @@ export async function getChats() {
 }
 
 /**
- * Get chats with pagination for the current user
+ * Get chats with pagination for the current user, scoped to the active
+ * space. `color` is the active space color (from the `spaceColor` cookie
+ * or a request param); a non-default color with no saved space yields an
+ * empty page.
  */
-export async function getChatsPage(limit = 20, offset = 0) {
+export async function getChatsPage(
+  limit = 20,
+  offset = 0,
+  color?: string | null
+) {
   const userId = await getCurrentUserId()
   if (!userId) {
     return { chats: [], nextOffset: null }
   }
-  return dbActions.getChatsPage(userId, limit, offset)
+  const filter = await resolveSpaceThreadFilter(userId, color)
+  if ('empty' in filter) {
+    return { chats: [], nextOffset: null }
+  }
+  return dbActions.getChatsPage(userId, limit, offset, filter.spaceId)
 }
 
 export async function getChatMeta(
