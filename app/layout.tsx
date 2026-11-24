@@ -21,6 +21,7 @@ import { Toaster } from '@/components/ui/sonner'
 
 import AppSidebar from '@/components/app-sidebar'
 import ArtifactRoot from '@/components/artifact/artifact-root'
+import { ConnectorsProvider } from '@/components/connectors/connectors-context'
 import Header from '@/components/header'
 import { KeyboardShortcutHandler } from '@/components/keyboard-shortcut-handler'
 import { LibraryProvider } from '@/components/library/library-context'
@@ -132,28 +133,30 @@ export default async function RootLayout({
               <UserProvider hasUser={!!userId}>
                 <SidebarProvider defaultOpen={false}>
                   <LibraryProvider>
-                    <UsageBudgetProvider
-                      key={user?.id ?? 'guest'}
-                      initialUsage={initialUsage}
-                      enabled={usageBudgetEnabled}
-                    >
-                      {/* Wraps the sidebar too, so the thread list can read
-                          the active space and refetch when it switches. */}
-                      <SpacesProvider
-                        key={userId ?? 'guest'}
-                        enabled={!!userId}
-                        initialColor={initialSpaceColor}
+                    <ConnectorsProvider>
+                      <UsageBudgetProvider
+                        key={user?.id ?? 'guest'}
+                        initialUsage={initialUsage}
+                        enabled={usageBudgetEnabled}
                       >
-                        {userId && <AppSidebar user={user} />}
-                        <KeyboardShortcutHandler />
-                        <div className="flex flex-col flex-1 min-w-0">
-                          <Header user={user} />
-                          <main className="flex flex-1 min-h-0 min-w-0 overflow-hidden">
-                            <ArtifactRoot>{children}</ArtifactRoot>
-                          </main>
-                        </div>
-                      </SpacesProvider>
-                    </UsageBudgetProvider>
+                        {/* Wraps the sidebar too, so the thread list can read
+                            the active space and refetch when it switches. */}
+                        <SpacesProvider
+                          key={userId ?? 'guest'}
+                          enabled={!!userId}
+                          initialColor={initialSpaceColor}
+                        >
+                          {userId && <AppSidebar user={user} />}
+                          <KeyboardShortcutHandler />
+                          <div className="flex flex-col flex-1 min-w-0">
+                            <Header user={user} />
+                            <main className="flex flex-1 min-h-0 min-w-0 overflow-hidden">
+                              <ArtifactRoot>{children}</ArtifactRoot>
+                            </main>
+                          </div>
+                        </SpacesProvider>
+                      </UsageBudgetProvider>
+                    </ConnectorsProvider>
                   </LibraryProvider>
                 </SidebarProvider>
               </UserProvider>

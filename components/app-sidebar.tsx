@@ -15,6 +15,7 @@ import {
 
 import { ChatHistorySection } from './sidebar/chat-history-section'
 import { ChatHistorySkeleton } from './sidebar/chat-history-skeleton'
+import { ConnectorsMenuItem } from './sidebar/connectors-menu-item'
 import { HomeLink } from './sidebar/home-link'
 import { LibraryMenuItem } from './sidebar/library-menu-item'
 import { NewChatMenuItem } from './sidebar/new-chat-menu-item'
@@ -43,6 +44,7 @@ export default function AppSidebar({ user }: { user?: AppUser | null }) {
         <SidebarMenu>
           <NewChatMenuItem />
           {libraryAvailable && <LibraryMenuItem />}
+          <ConnectorsMenuItem />
         </SidebarMenu>
         <div className="flex-1 overflow-y-auto">
           <Suspense fallback={<ChatHistorySkeleton />}>

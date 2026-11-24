@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server'
 
 import {
+  deleteCrunchbaseTokens,
   getCrunchbaseTokens,
   isCrunchbaseConfigured,
   isCrunchbaseConnected
@@ -20,5 +21,15 @@ export async function GET() {
     expiresAt: tokens?.expiresAt
       ? new Date(tokens.expiresAt).toISOString()
       : null
+  })
+}
+
+export async function DELETE() {
+  deleteCrunchbaseTokens()
+  return NextResponse.json({
+    configured: isCrunchbaseConfigured(),
+    connected: false,
+    authUrl: '/api/mcp/crunchbase/auth',
+    expiresAt: null
   })
 }

@@ -21,6 +21,10 @@ vi.mock('../sidebar/library-menu-item', () => ({
   LibraryMenuItem: () => <div>Library</div>
 }))
 
+vi.mock('../sidebar/connectors-menu-item', () => ({
+  ConnectorsMenuItem: () => <div>Connectors</div>
+}))
+
 vi.mock('../sidebar/version-footer', () => ({
   VersionFooter: () => <div>Version footer</div>
 }))
@@ -47,6 +51,7 @@ describe('AppSidebar library entry', () => {
     renderSidebar()
 
     expect(screen.getByText('Library')).toBeInTheDocument()
+    expect(screen.getByText('Connectors')).toBeInTheDocument()
   })
 
   test('shows the Library entry in anonymous mode (shared user)', () => {

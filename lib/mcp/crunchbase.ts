@@ -53,6 +53,18 @@ export function saveCrunchbaseTokens(tokens: CrunchbaseTokens): void {
   }
 }
 
+export function deleteCrunchbaseTokens(): void {
+  cachedTokens = null
+  try {
+    if (fs.existsSync(TOKENS_FILE)) {
+      fs.unlinkSync(TOKENS_FILE)
+      console.log('[Crunchbase MCP] Tokens deleted successfully')
+    }
+  } catch (err) {
+    console.error('[Crunchbase MCP] Error deleting tokens file:', err)
+  }
+}
+
 export function isCrunchbaseConnected(): boolean {
   const tokens = getCrunchbaseTokens()
   return !!tokens?.accessToken

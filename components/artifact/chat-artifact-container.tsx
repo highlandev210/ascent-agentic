@@ -7,6 +7,8 @@ import { cn } from '@/lib/utils'
 
 import { SidebarTrigger, useSidebar } from '@/components/ui/sidebar'
 
+import { useConnectors } from '@/components/connectors/connectors-context'
+import { ConnectorsPanel } from '@/components/connectors/connectors-panel'
 import { InspectorDrawer } from '@/components/inspector/inspector-drawer'
 import { InspectorPanel } from '@/components/inspector/inspector-panel'
 import { useLibrary } from '@/components/library/library-context'
@@ -53,8 +55,9 @@ export function ChatArtifactContainer({
   const hasUser = useHasUser()
   const { open, isMobile: isMobileSidebar } = useSidebar()
   const { isOpen: libraryOpen } = useLibrary()
+  const { isOpen: connectorsOpen } = useConnectors()
   const artifactOpen = state.isOpen && state.part
-  const panelOpen = Boolean(artifactOpen || libraryOpen)
+  const panelOpen = Boolean(artifactOpen || libraryOpen || connectorsOpen)
 
   const setContainerRef = useCallback((node: HTMLDivElement | null) => {
     setContainerElement(node)
@@ -178,6 +181,8 @@ export function ChatArtifactContainer({
               <InspectorPanel />
             ) : libraryOpen ? (
               <LibraryPanel />
+            ) : connectorsOpen ? (
+              <ConnectorsPanel />
             ) : null}
           </div>
         </div>

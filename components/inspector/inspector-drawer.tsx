@@ -7,6 +7,8 @@ import { useMediaQuery } from '@/lib/hooks/use-media-query'
 import { Drawer, DrawerContent, DrawerTitle } from '@/components/ui/drawer'
 
 import { useArtifact } from '@/components/artifact/artifact-context'
+import { useConnectors } from '@/components/connectors/connectors-context'
+import { ConnectorsPanel } from '@/components/connectors/connectors-panel'
 import { useLibrary } from '@/components/library/library-context'
 import { LibraryPanel } from '@/components/library/library-panel'
 
@@ -15,12 +17,14 @@ import { InspectorPanel } from './inspector-panel'
 export function InspectorDrawer() {
   const { state, close } = useArtifact()
   const { isOpen: libraryOpen, closeLibrary } = useLibrary()
+  const { isOpen: connectorsOpen, closeConnectors } = useConnectors()
   const part = state.part
   const isMobile = useMediaQuery('(max-width: 767px)')
-  const open = state.isOpen || libraryOpen
+  const open = state.isOpen || libraryOpen || connectorsOpen
 
   // Function to get the title based on part type (mirrors ArtifactPanel logic)
   const getTitle = () => {
+    if (connectorsOpen) return 'Connectors'
     if (libraryOpen) return 'Library'
     if (!part) return 'Artifact' // Default title
     switch (part.type) {
@@ -48,7 +52,9 @@ export function InspectorDrawer() {
       open={open}
       onOpenChange={open => {
         if (!open) {
-          if (libraryOpen) {
+          if (connectorsOpen) {
+            closeConnectors()
+          } else if (libraryOpen) {
             closeLibrary()
           } else {
             close()
@@ -62,7 +68,13 @@ export function InspectorDrawer() {
           <VisuallyHidden>{getTitle()}</VisuallyHidden>
         </DrawerTitle>
         <div className="min-h-0 flex-1 overflow-hidden">
-          {libraryOpen ? <LibraryPanel /> : <InspectorPanel />}
+          {connectorsOpen ? (
+            <ConnectorsPanel />
+          ) : libraryOpen ? (
+            <LibraryPanel />
+          ) : (
+            <InspectorPanel />
+          )}
         </div>
       </DrawerContent>
     </Drawer>

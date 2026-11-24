@@ -9,11 +9,6 @@ const DEFAULT_TOKEN_FILE = path.join(
 )
 
 export function getKnowledgeToken(): string | null {
-  if (process.env.KNOWLEDGE_MCP_TOKEN) {
-    const token = process.env.KNOWLEDGE_MCP_TOKEN.trim()
-    if (token) return token
-  }
-
   const tokenFilePath =
     process.env.KNOWLEDGE_MCP_TOKEN_FILE || DEFAULT_TOKEN_FILE
   try {
@@ -25,7 +20,35 @@ export function getKnowledgeToken(): string | null {
     console.error('[Knowledge MCP] Error reading token file:', err)
   }
 
+  if (process.env.KNOWLEDGE_MCP_TOKEN) {
+    const token = process.env.KNOWLEDGE_MCP_TOKEN.trim()
+    if (token) return token
+  }
+
   return null
+}
+
+export function saveKnowledgeToken(token: string): void {
+  const trimmed = token?.trim()
+  if (!trimmed) {
+    throw new Error('Knowledge MCP token cannot be empty')
+  }
+
+  const tokenFilePath =
+    process.env.KNOWLEDGE_MCP_TOKEN_FILE || DEFAULT_TOKEN_FILE
+  fs.writeFileSync(tokenFilePath, trimmed, 'utf-8')
+}
+
+export function deleteKnowledgeToken(): void {
+  const tokenFilePath =
+    process.env.KNOWLEDGE_MCP_TOKEN_FILE || DEFAULT_TOKEN_FILE
+  try {
+    if (fs.existsSync(tokenFilePath)) {
+      fs.unlinkSync(tokenFilePath)
+    }
+  } catch (err) {
+    console.error('[Knowledge MCP] Error deleting token file:', err)
+  }
 }
 
 export function isKnowledgeConfigured(): boolean {

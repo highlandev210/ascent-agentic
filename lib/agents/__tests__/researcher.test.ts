@@ -20,6 +20,16 @@ vi.mock('ai', () => ({
   })
 }))
 
+vi.mock('@/lib/mcp/crunchbase', () => ({
+  createCrunchbaseTools: vi.fn(() => ({})),
+  isCrunchbaseConnected: vi.fn(() => false)
+}))
+
+vi.mock('@/lib/mcp/knowledge', () => ({
+  createKnowledgeTools: vi.fn(() => ({})),
+  isKnowledgeConnected: vi.fn(() => false)
+}))
+
 vi.mock('@/lib/tools/fetch', () => ({
   createFetchTool: vi.fn(() => ({}))
 }))

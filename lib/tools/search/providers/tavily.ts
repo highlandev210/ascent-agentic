@@ -1,3 +1,4 @@
+import { getTavilyApiKey } from '@/lib/connectors/tavily'
 import { SearchResultItem, SearchResults } from '@/lib/types'
 import { sanitizeUrl } from '@/lib/utils'
 
@@ -74,7 +75,7 @@ export class TavilySearchProvider extends BaseSearchProvider {
     includeDomains: string[] = [],
     excludeDomains: string[] = []
   ): Promise<SearchResults> {
-    const apiKey = process.env.TAVILY_API_KEY
+    const apiKey = getTavilyApiKey()
     this.validateApiKey(apiKey, 'TAVILY')
 
     const siteOnlyOperands = extractSiteOnlyOperands(query)

@@ -1,5 +1,6 @@
 import { tool, UIToolInvocation } from 'ai'
 
+import { getTavilyApiKey } from '@/lib/connectors/tavily'
 import { INVALID_URL_SENTINEL, ToolFailureError } from '@/lib/errors/tool-error'
 import { crawl4aiFetchSchema, fetchSchema } from '@/lib/schema/fetch'
 import { SearchResults as SearchResultsType } from '@/lib/types'
@@ -152,7 +153,7 @@ async function fetchJinaReaderData(url: string): Promise<SearchResultsType> {
 
 async function fetchTavilyExtractData(url: string): Promise<SearchResultsType> {
   try {
-    const apiKey = process.env.TAVILY_API_KEY
+    const apiKey = getTavilyApiKey()
     const response = await fetch('https://api.tavily.com/extract', {
       method: 'POST',
       headers: {

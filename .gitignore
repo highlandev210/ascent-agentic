@@ -31,6 +31,7 @@ yarn-error.log*
 # local MCP OAuth token caches (secrets — never commit)
 .crunchbase-tokens.json
 .knowledge-token.txt
+.tavily-key
 
 # vercel
 .vercel
