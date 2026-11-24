@@ -1,6 +1,8 @@
 import { isStepCount, tool, ToolLoopAgent } from 'ai'
 
 import type { DraftVersion } from '@/lib/draft/draft'
+import { createCrunchbaseTools, isCrunchbaseConnected } from '@/lib/mcp/crunchbase'
+import { createKnowledgeTools, isKnowledgeConnected } from '@/lib/mcp/knowledge'
 import type {
   ResearcherRuntimeContext,
   ResearcherTools
@@ -137,13 +139,37 @@ export function createResearcher({
     }
 
     // Build tools object with proper typing
-    const tools: ResearcherTools = {
+    const tools: any = {
       search: searchTool,
       fetch: fetchTool,
       askQuestion: askQuestionTool,
       ...todoTools,
       ...draftTools
-    } as ResearcherTools
+    }
+
+    // Register Crunchbase MCP tools if connected
+    if (isCrunchbaseConnected()) {
+      const cbTools = createCrunchbaseTools()
+      Object.assign(tools, cbTools)
+      for (const toolName of Object.keys(cbTools)) {
+        if (!activeToolsList.includes(toolName as any)) {
+          activeToolsList.push(toolName as any)
+        }
+      }
+      systemPrompt += `\n\nCrunchbase MCP is connected. For any questions regarding private companies, startups, funding rounds, valuations, acquisitions, or investors, use the Crunchbase MCP tools (mcp__crunchbase__query_answer, mcp__crunchbase__resolve_entity, mcp__crunchbase__get_entity). When presenting funding history or company progression, you can use the Timeline, Chart, and StatGrid spec widgets to present the data interactively.`
+    }
+
+    // Register QSTM Research Evidence Knowledge MCP tools if connected
+    if (isKnowledgeConnected()) {
+      const knowledgeTools = createKnowledgeTools()
+      Object.assign(tools, knowledgeTools)
+      for (const toolName of Object.keys(knowledgeTools)) {
+        if (!activeToolsList.includes(toolName as any)) {
+          activeToolsList.push(toolName as any)
+        }
+      }
+      systemPrompt += `\n\nQSTM Research Evidence Knowledge MCP is connected. For research on Southeast Asia market intelligence, EV adoption, energy and data center infrastructure, or verified publisher evidence citations, first discover packs using mcp__knowledge__discover_packs, then research selected packs using mcp__knowledge__research_pack, and use domain tools (mcp__knowledge__query_ev_series, mcp__knowledge__calculate_philippines_share, mcp__knowledge__compare_capacity, mcp__knowledge__run_scenario, mcp__knowledge__exact_search, mcp__knowledge__get_evidence). Use exact quotations, preserve dates and citations, and utilize interactive widgets (Chart, Timeline, StatGrid) when helpful.`
+    }
 
     const providerOptions =
       modelConfig?.providerId === 'openai' && chatId

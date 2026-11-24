@@ -3,7 +3,7 @@
 name: morphic-stack
 services:
   morphic:
-    image: ghcr.io/${GITHUB_REPOSITORY:-your-username/morphic}:latest
+    image: ghcr.io/${GITHUB_REPOSITORY:-miurla/morphic}:latest
     command: npx next start -H 0.0.0.0
     build:
       context: .
@@ -30,7 +30,7 @@ services:
       MORPHIC_CLOUD_DEPLOYMENT: 'false'
       # Docker-internal service URLs
       LOCAL_REDIS_URL: ${LOCAL_REDIS_URL:-redis://redis:6379}
-      SEARCH_API: ${SEARCH_API:-searxng}
+      SEARCH_API: ${SEARCH_API:-tavily}
       SEARXNG_API_URL: ${SEARXNG_API_URL:-http://searxng:8080}
       # Version footer / update check (all optional, see docs/CONFIGURATION.md)
       # MORPHIC_INSTALL_METHOD: docker # Footer label; the image already sets this

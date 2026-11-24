@@ -343,6 +343,32 @@ export function mapUIMessagePartsToDBParts(
 
       // Data parts
       default:
+        // Handle custom/dynamic/mcp tool parts emitted by AI SDK
+        if (part.type.startsWith('tool-')) {
+          const toolName = part.type.substring(5)
+          const isExtended = isExtendedToolPart(part)
+          const toolCallId =
+            (isExtended && part.toolCallId) ||
+            (part as any).toolCallId ||
+            generateId()
+          const toolState =
+            (isExtended && part.state) ||
+            (part as any).state ||
+            ('output-available' as ToolState)
+
+          return {
+            ...basePart,
+            type: 'tool-dynamic',
+            tool_toolCallId: toolCallId,
+            tool_state: toolState,
+            tool_dynamic_name: toolName,
+            tool_dynamic_type: toolName.startsWith('mcp__') ? 'mcp' : 'dynamic',
+            tool_dynamic_input: (part as any).input || (part as any).args,
+            tool_dynamic_output: (part as any).output || (part as any).result,
+            tool_errorText: (part as any).errorText || (part as any).error
+          }
+        }
+
         if (part.type.startsWith('data-')) {
           const dataType = part.type.substring(5) // Remove 'data-' prefix
           return {

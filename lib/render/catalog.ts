@@ -81,6 +81,54 @@ export const catalog = schema.createCatalog({
         text: z.string()
       }),
       description: 'A small label such as a price, location, date, or type'
+    },
+    Chart: {
+      props: z.object({
+        title: z.string().optional(),
+        type: z.enum(['bar', 'line', 'donut']).default('bar'),
+        data: z.array(
+          z.object({
+            label: z.string(),
+            value: z.number(),
+            secondaryValue: z.number().optional(),
+            annotation: z.string().optional()
+          })
+        ),
+        valuePrefix: z.string().optional(),
+        valueSuffix: z.string().optional()
+      }),
+      description:
+        'An interactive chart (bar, line, or donut) for financial metrics, funding rounds, valuations, or numerical comparisons.'
+    },
+    Timeline: {
+      props: z.object({
+        title: z.string().optional(),
+        items: z.array(
+          z.object({
+            title: z.string(),
+            date: z.string().optional(),
+            value: z.string().optional(),
+            description: z.string().optional(),
+            badges: z.array(z.string()).optional()
+          })
+        )
+      }),
+      description:
+        'A stepped vertical timeline for funding rounds, startup history, acquisition milestones, or event progressions.'
+    },
+    StatGrid: {
+      props: z.object({
+        stats: z.array(
+          z.object({
+            label: z.string(),
+            value: z.string(),
+            subtext: z.string().optional(),
+            trend: z.enum(['up', 'neutral', 'down']).optional()
+          })
+        )
+      }),
+      description:
+        'A responsive grid of key financial or startup metric cards.'
     }
   },
   actions: {

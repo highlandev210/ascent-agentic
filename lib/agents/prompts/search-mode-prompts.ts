@@ -2,6 +2,7 @@ import { getDraftPrompt } from '@/lib/draft/prompt'
 import {
   getFollowUpSuggestionsSpecPrompt,
   getImageSpecPrompt,
+  getIntelligentUIWidgetsPrompt,
   getSourceCardsSpecPrompt
 } from '@/lib/render/prompt'
 import {
@@ -179,6 +180,8 @@ End with a synthesizing conclusion that ties the main points together into a cle
 ${getDraftPrompt()}
 
 ${getImageSpecPrompt()}
+
+${getIntelligentUIWidgetsPrompt()}
 
 ${getSourceCardsSpecPrompt()}
 
@@ -358,6 +361,8 @@ Conclude with a brief synthesis that ties together the main insights into a clea
 ${getDraftPrompt()}
 
 ${getImageSpecPrompt()}
+
+${getIntelligentUIWidgetsPrompt()}
 
 ${getSourceCardsSpecPrompt()}
 

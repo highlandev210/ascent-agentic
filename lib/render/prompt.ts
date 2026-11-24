@@ -189,3 +189,34 @@ ${EXAMPLE_IMAGE_SPEC_BLOCK}
 Mount Fuji combines geographic prominence with enduring cultural importance.
 `
 }
+
+/**
+ * Returns guidance instructing the model on using interactive Intelligent UI widgets
+ * (Chart, Timeline, StatGrid) for financial, funding, numerical, or milestone data.
+ */
+export function getIntelligentUIWidgetsPrompt(): string {
+  return `
+INTELLIGENT UI WIDGETS (\`\`\`spec blocks):
+When your answer involves company funding rounds, venture comparisons, financial metrics, timelines, or key statistics, you can render interactive Generative UI widgets using \`\`\`spec blocks directly in your markdown:
+
+1. Chart (for funding by round, numerical comparisons, or valuations):
+\`\`\`spec
+{"op":"add","path":"/root","value":"chart1"}
+{"op":"add","path":"/elements/chart1","value":{"type":"Chart","props":{"title":"Funding by Round ($B)","type":"bar","data":[{"label":"Series E","value":17},{"label":"Series F","value":13},{"label":"Series G","value":30},{"label":"Series H","value":65}],"valuePrefix":"$","valueSuffix":"B"}}}
+\`\`\`
+
+2. Timeline (for funding round progression, startup milestones, or company history):
+\`\`\`spec
+{"op":"add","path":"/root","value":"time1"}
+{"op":"add","path":"/elements/time1","value":{"type":"Timeline","props":{"title":"Funding Progression","items":[{"title":"Series H","date":"May 2026","value":"$65B @ $965B Valuation","badges":["Altimeter","Sequoia","Greenoaks"]},{"title":"Series G","date":"Feb 2026","value":"$30B @ $380B Valuation","badges":["GIC","Coatue"]}]}}}
+\`\`\`
+
+3. StatGrid (for key KPI stats at a glance):
+\`\`\`spec
+{"op":"add","path":"/root","value":"stats1"}
+{"op":"add","path":"/elements/stats1","value":{"type":"StatGrid","props":{"stats":[{"label":"Total Raised","value":"$125B","trend":"up"},{"label":"Latest Valuation","value":"$965B","subtext":"Series H"},{"label":"Rounds","value":"8"}]}}}
+\`\`\`
+
+Place these widgets inline where relevant to make venture capital, financial, and comparison data visually rich and interactive!
+`
+}

@@ -2,16 +2,15 @@
 
 import { useMemo } from 'react'
 
-import { DISCLAIMER_TEXT, getTips, shuffle } from '@/lib/footer-tips'
+import { getTips, shuffle } from '@/lib/footer-tips'
 
 import { useTypewriterCycle } from '@/hooks/use-typewriter-cycle'
 
 function FooterContent() {
   const shuffledTips = useMemo(() => shuffle(getTips()), [])
 
-  // Build items array: disclaimer first, then tip descriptions
   const items = useMemo(
-    () => [DISCLAIMER_TEXT, ...shuffledTips.map(t => t.description)],
+    () => shuffledTips.map(t => t.description),
     [shuffledTips]
   )
 
@@ -20,10 +19,8 @@ function FooterContent() {
 
   if (isIdle && charCount === 0) return null
 
-  // Index 0 = disclaimer, 1+ = tips
-  const tipDataIndex = currentIndex - 1
-  const isTip = tipDataIndex >= 0 && charCount > 0
-  const tip = isTip ? shuffledTips[tipDataIndex] : null
+  const isTip = charCount > 0
+  const tip = isTip ? shuffledTips[currentIndex] : null
 
   return (
     <div className="flex items-center gap-2 select-none">
