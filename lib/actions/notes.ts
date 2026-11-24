@@ -65,6 +65,18 @@ export async function saveNote({
   }
 
   try {
+    // Saving the same answer is idempotent: if this message is already in the
+    // library, return the existing note instead of inserting a duplicate.
+    if (sourceMessageId) {
+      const existing = await dbActions.getNoteBySourceMessageId(
+        userId,
+        sourceMessageId
+      )
+      if (existing) {
+        return { success: true, note: existing }
+      }
+    }
+
     const note = await dbActions.createNote({
       userId,
       chatId: chatId || null,

@@ -33,6 +33,7 @@ describe('Note Actions', () => {
       hasMore: false
     })
     vi.mocked(dbActions.getNote).mockResolvedValue(note)
+    vi.mocked(dbActions.getNoteBySourceMessageId).mockResolvedValue(null)
     vi.mocked(dbActions.deleteNote).mockResolvedValue({ success: true })
   })
 
@@ -56,6 +57,34 @@ describe('Note Actions', () => {
       title: 'Saved answer',
       content: '## **Saved answer**\n\nSaved answer content'
     })
+  })
+
+  it('does not create a duplicate when the same answer is saved again', async () => {
+    vi.mocked(dbActions.getNoteBySourceMessageId).mockResolvedValue(note)
+
+    const result = await saveNote({
+      content: 'Saved answer content',
+      sourceMessageId: 'message-1'
+    })
+
+    expect(result).toEqual({ success: true, note })
+    expect(dbActions.getNoteBySourceMessageId).toHaveBeenCalledWith(
+      'user-1',
+      'message-1'
+    )
+    expect(dbActions.createNote).not.toHaveBeenCalled()
+  })
+
+  it('creates a note when none exists for the message', async () => {
+    vi.mocked(dbActions.getNoteBySourceMessageId).mockResolvedValue(null)
+
+    const result = await saveNote({
+      content: 'Saved answer content',
+      sourceMessageId: 'message-1'
+    })
+
+    expect(result).toEqual({ success: true, note })
+    expect(dbActions.createNote).toHaveBeenCalled()
   })
 
   it('rejects empty content', async () => {

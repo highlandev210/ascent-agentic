@@ -726,6 +726,31 @@ export async function getNote(
   })
 }
 
+/**
+ * The user's existing note saved from a given chat message, if any. Used to
+ * keep saving the same answer idempotent (one note per message), newest first.
+ */
+export async function getNoteBySourceMessageId(
+  userId: string,
+  sourceMessageId: string
+): Promise<Note | null> {
+  return withRLS(userId, async tx => {
+    const [note] = await tx
+      .select()
+      .from(notes)
+      .where(
+        and(
+          eq(notes.userId, userId),
+          eq(notes.sourceMessageId, sourceMessageId)
+        )
+      )
+      .orderBy(desc(notes.createdAt))
+      .limit(1)
+
+    return note ?? null
+  })
+}
+
 export async function deleteNote(
   noteId: string,
   userId: string
