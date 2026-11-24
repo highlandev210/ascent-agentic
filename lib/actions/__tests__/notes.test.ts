@@ -65,29 +65,25 @@ describe('Note Actions', () => {
     expect(dbActions.createNote).not.toHaveBeenCalled()
   })
 
-  it('rejects anonymous mode', async () => {
+  it('saves in anonymous mode under the shared user id', async () => {
     process.env.ENABLE_AUTH = 'false'
 
     const result = await saveNote({ content: 'Saved answer' })
 
-    expect(result).toEqual({
-      success: false,
-      error: 'Library is unavailable in anonymous mode.'
-    })
-    expect(dbActions.createNote).not.toHaveBeenCalled()
+    expect(result).toEqual({ success: true, note })
+    expect(dbActions.createNote).toHaveBeenCalledWith(
+      expect.objectContaining({ userId: 'user-1', content: 'Saved answer' })
+    )
   })
 
-  it('rejects anonymous mode when AUTH_PROVIDER=none with ENABLE_AUTH unset', async () => {
+  it('saves in anonymous mode when AUTH_PROVIDER=none with ENABLE_AUTH unset', async () => {
     process.env.AUTH_PROVIDER = 'none'
     delete process.env.ENABLE_AUTH
 
     const result = await saveNote({ content: 'Saved answer' })
 
-    expect(result).toEqual({
-      success: false,
-      error: 'Library is unavailable in anonymous mode.'
-    })
-    expect(dbActions.createNote).not.toHaveBeenCalled()
+    expect(result).toEqual({ success: true, note })
+    expect(dbActions.createNote).toHaveBeenCalled()
   })
 
   it('lists current user notes', async () => {

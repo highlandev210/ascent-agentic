@@ -1,7 +1,6 @@
 'use server'
 
 import { getCurrentUserId } from '@/lib/auth/get-current-user'
-import { isAnonymousMode } from '@/lib/auth/provider'
 import * as dbActions from '@/lib/db/actions'
 import type { Note } from '@/lib/db/schema'
 import { stripMarkdownText } from '@/lib/utils/markdown'
@@ -34,13 +33,8 @@ function deriveTitle(content: string, title?: string) {
 }
 
 async function requireNoteUserId() {
-  if (isAnonymousMode()) {
-    return {
-      userId: null,
-      error: 'Library is unavailable in anonymous mode.'
-    }
-  }
-
+  // Anonymous mode is allowed: all notes are saved under the single shared
+  // anonymous user id, like chat history.
   const userId = await getCurrentUserId()
   if (!userId) {
     return { userId: null, error: 'Sign in to save notes.' }

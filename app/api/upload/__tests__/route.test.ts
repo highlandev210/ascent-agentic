@@ -239,21 +239,23 @@ describe('POST /api/upload', () => {
     expect(send).toHaveBeenCalledOnce()
   })
 
-  it('skips the lookup in anonymous mode, which has no library', async () => {
+  it('runs the lookup and saves to the library in anonymous mode', async () => {
     process.env.ENABLE_AUTH = 'false'
+    vi.mocked(dbActions.findChatFileCandidates).mockResolvedValue([])
 
     await POST(uploadRequest())
 
-    expect(dbActions.findChatFileCandidates).not.toHaveBeenCalled()
-    expect(send).toHaveBeenCalledOnce()
+    expect(dbActions.findChatFileCandidates).toHaveBeenCalled()
+    expect(dbActions.createLibraryFile).toHaveBeenCalled()
   })
 
-  it('skips the lookup when AUTH_PROVIDER=none with ENABLE_AUTH unset', async () => {
+  it('runs the lookup and saves to the library when AUTH_PROVIDER=none', async () => {
     process.env.AUTH_PROVIDER = 'none'
+    vi.mocked(dbActions.findChatFileCandidates).mockResolvedValue([])
 
     await POST(uploadRequest())
 
-    expect(dbActions.findChatFileCandidates).not.toHaveBeenCalled()
-    expect(send).toHaveBeenCalledOnce()
+    expect(dbActions.findChatFileCandidates).toHaveBeenCalled()
+    expect(dbActions.createLibraryFile).toHaveBeenCalled()
   })
 })

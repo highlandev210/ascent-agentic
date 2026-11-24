@@ -94,30 +94,25 @@ describe('File Actions', () => {
     expect(dbActions.deleteLibraryFile).toHaveBeenCalledWith('file-1', 'user-1')
   })
 
-  it('rejects anonymous mode', async () => {
+  it('lists files in anonymous mode under the shared user id', async () => {
     process.env.ENABLE_AUTH = 'false'
 
     const result = await listFiles()
 
-    expect(result).toEqual({
-      success: false,
-      files: [],
-      error: 'Library is unavailable in anonymous mode.'
-    })
-    expect(dbActions.getLibraryFiles).not.toHaveBeenCalled()
+    expect(result.success).toBe(true)
+    expect(dbActions.getLibraryFiles).toHaveBeenCalledWith(
+      'user-1',
+      expect.any(Object)
+    )
   })
 
-  it('rejects anonymous mode when AUTH_PROVIDER=none with ENABLE_AUTH unset', async () => {
+  it('lists files in anonymous mode when AUTH_PROVIDER=none with ENABLE_AUTH unset', async () => {
     process.env.AUTH_PROVIDER = 'none'
     delete process.env.ENABLE_AUTH
 
     const result = await listFiles()
 
-    expect(result).toEqual({
-      success: false,
-      files: [],
-      error: 'Library is unavailable in anonymous mode.'
-    })
-    expect(dbActions.getLibraryFiles).not.toHaveBeenCalled()
+    expect(result.success).toBe(true)
+    expect(dbActions.getLibraryFiles).toHaveBeenCalled()
   })
 })

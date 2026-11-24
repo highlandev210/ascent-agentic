@@ -5,7 +5,6 @@ import { createHash } from 'node:crypto'
 
 import { capture } from '@/lib/analytics/dispatch'
 import { getCurrentUserId } from '@/lib/auth/get-current-user'
-import { isAnonymousMode } from '@/lib/auth/provider'
 import * as dbActions from '@/lib/db/actions'
 import {
   detectFileMediaType,
@@ -69,7 +68,6 @@ export async function POST(req: NextRequest) {
         { status: 400 }
       )
     }
-    const isAnonymous = isAnonymousMode()
     const buffer = Buffer.from(await file.arrayBuffer())
 
     // The browser reports file.type from the name, so the check above says
@@ -88,7 +86,7 @@ export async function POST(req: NextRequest) {
       )
     }
 
-    if (!isAnonymous && chatId) {
+    if (chatId) {
       const reused = await reuseExistingChatFile(
         file,
         buffer,
@@ -105,9 +103,6 @@ export async function POST(req: NextRequest) {
     }
 
     const result = await uploadFileToR2(file, buffer, mediaType, userId, chatId)
-    if (isAnonymous) {
-      return NextResponse.json({ success: true, file: result }, { status: 200 })
-    }
 
     let libraryFile = null
     try {

@@ -1,6 +1,5 @@
 import { Suspense } from 'react'
 
-import { isAnonymousMode } from '@/lib/auth/provider'
 import type { AppUser } from '@/lib/auth/types'
 import { cn } from '@/lib/utils'
 
@@ -26,7 +25,9 @@ import { IconLogo } from './ui/icons'
 export default function AppSidebar({ user }: { user?: AppUser | null }) {
   // Anonymous mode has no per-user library, and the server actions reject it,
   // so the entry point follows the same switch the pages use.
-  const libraryAvailable = !isAnonymousMode()
+  // The sidebar only renders when a user id exists (including the shared
+  // anonymous user), so the library is always available here.
+  const libraryAvailable = true
   const versionFooterEnabled = process.env.MORPHIC_CLOUD_DEPLOYMENT !== 'true'
 
   return (

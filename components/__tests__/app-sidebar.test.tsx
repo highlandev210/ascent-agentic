@@ -49,19 +49,19 @@ describe('AppSidebar library entry', () => {
     expect(screen.getByText('Library')).toBeInTheDocument()
   })
 
-  test('hides the Library entry in anonymous mode', () => {
+  test('shows the Library entry in anonymous mode (shared user)', () => {
     vi.stubEnv('ENABLE_AUTH', 'false')
     renderSidebar()
 
-    expect(screen.queryByText('Library')).not.toBeInTheDocument()
+    expect(screen.getByText('Library')).toBeInTheDocument()
     expect(screen.getByText('New')).toBeInTheDocument()
   })
 
-  test('hides the Library entry when AUTH_PROVIDER=none with ENABLE_AUTH unset', () => {
+  test('shows the Library entry when AUTH_PROVIDER=none with ENABLE_AUTH unset', () => {
     vi.stubEnv('AUTH_PROVIDER', 'none')
     renderSidebar()
 
-    expect(screen.queryByText('Library')).not.toBeInTheDocument()
+    expect(screen.getByText('Library')).toBeInTheDocument()
   })
 })
 
