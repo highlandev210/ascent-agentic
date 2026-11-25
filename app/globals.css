@@ -14,6 +14,7 @@
   --space-orange: #ec6f35;
   --space-current: var(--foreground);
   --space-current-fg: var(--background);
+  --space-logo: #222;
   --background: oklch(0.99 0 0);
   --foreground: oklch(0 0 0);
   --card: oklch(1 0 0);
@@ -124,42 +125,54 @@
 
 html[data-space-color='green'] {
   --space-current: var(--space-green);
+  --space-logo: var(--space-green);
   --ring: var(--space-green);
   --space-current-fg: #ffffff;
 }
 html[data-space-color='blue'] {
   --space-current: var(--space-blue);
+  --space-logo: var(--space-blue);
   --ring: var(--space-blue);
   --space-current-fg: #ffffff;
 }
 html[data-space-color='purple'] {
   --space-current: var(--space-purple);
+  --space-logo: var(--space-purple);
   --ring: var(--space-purple);
   --space-current-fg: #ffffff;
 }
 html[data-space-color='yellow'] {
   --space-current: var(--space-yellow);
+  --space-logo: var(--space-yellow);
   --ring: var(--space-yellow);
   --space-current-fg: #000000;
 }
 html[data-space-color='pink'] {
   --space-current: var(--space-pink);
+  --space-logo: var(--space-pink);
   --ring: var(--space-pink);
   --space-current-fg: #ffffff;
 }
 html[data-space-color='red'] {
   --space-current: var(--space-red);
+  --space-logo: var(--space-red);
   --ring: var(--space-red);
   --space-current-fg: #ffffff;
 }
 html[data-space-color='orange'] {
   --space-current: var(--space-orange);
+  --space-logo: var(--space-orange);
   --ring: var(--space-orange);
   --space-current-fg: #ffffff;
 }
 html[data-space-color='black'] {
   --space-current: var(--foreground);
+  --space-logo: #222;
   --space-current-fg: var(--background);
+}
+
+[data-sidebar='header'] [data-sidebar='trigger']:hover {
+  color: var(--space-current);
 }
 
 html:not([data-space-color='black']) .space-accent-btn {

@@ -56,7 +56,13 @@ export function AnimatedLogo({
       className={cn('size-8', className)}
       {...props}
     >
-      <circle cx="128" cy="128" r="128" fill={bodyColor ?? 'black'}></circle>
+      <circle
+        cx="128"
+        cy="128"
+        r="128"
+        fill={bodyColor ?? 'var(--space-logo, #222)'}
+        className="transition-colors duration-200"
+      ></circle>
       <g
         className={cn(
           'origin-center',

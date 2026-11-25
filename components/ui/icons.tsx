@@ -19,7 +19,13 @@ function IconLogo({ className, bodyColor, ...props }: LogoProps) {
       className={cn('size-4', className)}
       {...props}
     >
-      <circle cx="128" cy="128" r="128" fill={bodyColor ?? 'black'}></circle>
+      <circle
+        cx="128"
+        cy="128"
+        r="128"
+        fill={bodyColor ?? 'var(--space-logo, #222)'}
+        className="transition-colors duration-200"
+      ></circle>
       <circle cx="102" cy="128" r="18" fill="white"></circle>
       <circle cx="154" cy="128" r="18" fill="white"></circle>
     </svg>
@@ -149,7 +155,13 @@ function IconBlinkingLogo({ className, bodyColor, ...props }: LogoProps) {
       className={cn('size-4', className)}
       {...props}
     >
-      <circle cx="128" cy="128" r="128" fill={bodyColor ?? '#222'}></circle>
+      <circle
+        cx="128"
+        cy="128"
+        r="128"
+        fill={bodyColor ?? 'var(--space-logo, #222)'}
+        className="transition-colors duration-200"
+      ></circle>
       <ellipse
         cx="102"
         cy="128"
