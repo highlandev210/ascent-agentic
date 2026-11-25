@@ -6,7 +6,6 @@ import { cn } from '@/lib/utils'
 import {
   Sidebar,
   SidebarContent,
-  SidebarFooter,
   SidebarHeader,
   SidebarMenu,
   SidebarRail,
@@ -19,8 +18,6 @@ import { ConnectorsMenuItem } from './sidebar/connectors-menu-item'
 import { HomeLink } from './sidebar/home-link'
 import { LibraryMenuItem } from './sidebar/library-menu-item'
 import { NewChatMenuItem } from './sidebar/new-chat-menu-item'
-import { VersionFooter } from './sidebar/version-footer'
-import { VersionFooterSkeleton } from './sidebar/version-footer-skeleton'
 import { IconLogo } from './ui/icons'
 
 export default function AppSidebar({ user }: { user?: AppUser | null }) {
@@ -29,7 +26,6 @@ export default function AppSidebar({ user }: { user?: AppUser | null }) {
   // The sidebar only renders when a user id exists (including the shared
   // anonymous user), so the library is always available here.
   const libraryAvailable = true
-  const versionFooterEnabled = process.env.MORPHIC_CLOUD_DEPLOYMENT !== 'true'
 
   return (
     <Sidebar side="left" variant="sidebar" collapsible="offcanvas">
@@ -52,13 +48,6 @@ export default function AppSidebar({ user }: { user?: AppUser | null }) {
           </Suspense>
         </div>
       </SidebarContent>
-      {versionFooterEnabled && (
-        <SidebarFooter>
-          <Suspense fallback={<VersionFooterSkeleton />}>
-            <VersionFooter user={user} />
-          </Suspense>
-        </SidebarFooter>
-      )}
       <SidebarRail />
     </Sidebar>
   )

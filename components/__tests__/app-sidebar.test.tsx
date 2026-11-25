@@ -75,14 +75,7 @@ describe('AppSidebar version footer', () => {
     vi.unstubAllEnvs()
   })
 
-  test('shows the version footer by default', () => {
-    renderSidebar()
-
-    expect(screen.getByText('Version footer')).toBeInTheDocument()
-  })
-
-  test('hides the version footer on the cloud deployment', () => {
-    vi.stubEnv('MORPHIC_CLOUD_DEPLOYMENT', 'true')
+  test('does not render the version footer', () => {
     renderSidebar()
 
     expect(screen.queryByText('Version footer')).not.toBeInTheDocument()
