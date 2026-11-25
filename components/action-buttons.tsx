@@ -226,7 +226,7 @@ export function ActionButtons({
                 key={index}
                 type="button"
                 className={cn(
-                  'w-full rounded-md px-3 py-2 text-left text-sm',
+                  'w-full rounded-full px-3.5 py-2 text-left text-sm',
                   'transition-colors duration-[140ms] ease-[var(--motion-ease-out)] hover:bg-muted',
                   'flex items-center gap-2 group'
                 )}

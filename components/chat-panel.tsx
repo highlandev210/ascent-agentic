@@ -615,7 +615,11 @@ export function ChatPanel({
 
         <div
           className={cn(
-            'relative flex w-full flex-col gap-2 rounded-[32px] border border-input bg-muted transition-[box-shadow,border-color] duration-200 ease-[var(--motion-ease-out)]',
+            'relative flex w-full flex-col gap-2 rounded-[36px] sm:rounded-full border border-input bg-muted transition-[box-shadow,border-color] duration-200 ease-[var(--motion-ease-out)]',
+            (contentCards.length > 0 ||
+              quotedContexts.length > 0 ||
+              noteContexts.length > 0) &&
+              '!rounded-3xl',
             isInputFocused &&
               'ring-2 ring-[var(--space-current,var(--ring))] shadow-sm border-[var(--space-current,var(--border))]'
           )}
@@ -788,7 +792,7 @@ export function ChatPanel({
             spellCheck={false}
             value={input}
             disabled={disabled || isLoading || isToolInvocationInProgress()}
-            className="resize-none w-full min-h-12 bg-transparent border-0 p-3 md:p-4 text-sm placeholder:text-muted-foreground focus-visible:outline-hidden disabled:cursor-not-allowed disabled:opacity-50"
+            className="resize-none w-full min-h-12 bg-transparent border-0 px-4 pt-3.5 md:px-5 md:pt-4 text-sm placeholder:text-muted-foreground focus-visible:outline-hidden disabled:cursor-not-allowed disabled:opacity-50"
             onChange={handleInputChange}
             onPaste={e => {
               const text = e.clipboardData.getData('text')
@@ -857,7 +861,7 @@ export function ChatPanel({
           />
 
           {/* Bottom menu area */}
-          <div className="flex items-center justify-between p-2 md:p-3">
+          <div className="flex items-center justify-between px-3 pb-2 md:px-4 md:pb-3">
             <div className="flex items-center gap-2">
               {!isGuest && (
                 <div>
@@ -946,7 +950,7 @@ export function ChatPanel({
                 size={'icon'}
                 className={cn(
                   isLoading && 'animate-pulse',
-                  'size-8 md:size-10 rounded-full transition-colors duration-200',
+                  'size-8 md:size-10 rounded-full !rounded-full transition-colors duration-200',
                   'space-accent-btn'
                 )}
                 disabled={

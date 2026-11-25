@@ -327,7 +327,7 @@ export function ChatHistoryClient() {
             }}
             placeholder="Search history"
             aria-label="Search history"
-            className="h-8 text-xs pr-7"
+            className="h-8 text-xs pr-7 rounded-full pl-3"
           />
           {query && (
             <button
