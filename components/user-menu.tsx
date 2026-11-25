@@ -6,7 +6,6 @@ import { useRouter } from 'next/navigation'
 
 import {
   IconChartBar as ChartBar,
-  IconLink as Link2,
   IconLogout as LogOut,
   IconShield,
   IconUserCircle as UserRound
@@ -34,7 +33,6 @@ import { useUsageBudget } from '@/components/usage-budget-provider'
 import { UsageDialog } from '@/components/usage-dialog'
 
 import { Button } from './ui/button'
-import { ExternalLinkItems } from './external-link-items'
 
 interface UserMenuProps {
   user: AppUser
@@ -156,15 +154,7 @@ export default function UserMenu({ user }: UserMenuProps) {
               </span>
             </DropdownMenuItem>
           )}
-          <DropdownMenuSub>
-            <DropdownMenuSubTrigger>
-              <Link2 className="size-4" />
-              <span>Links</span>
-            </DropdownMenuSubTrigger>
-            <DropdownMenuSubContent>
-              <ExternalLinkItems />
-            </DropdownMenuSubContent>
-          </DropdownMenuSub>
+
           <DropdownMenuSeparator />
           <DropdownMenuItem onClick={handleLogout}>
             <LogOut className="size-4" />

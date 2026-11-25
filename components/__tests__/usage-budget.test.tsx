@@ -22,10 +22,6 @@ vi.mock('@/components/account-settings-dialog', () => ({
   AccountSettingsDialog: () => null
 }))
 
-vi.mock('@/components/external-link-items', () => ({
-  ExternalLinkItems: () => null
-}))
-
 vi.mock('@/components/ui/dropdown-menu', () => ({
   DropdownMenu: ({ children }: { children: React.ReactNode }) => children,
   DropdownMenuContent: ({ children }: { children: React.ReactNode }) => (

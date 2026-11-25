@@ -49,12 +49,6 @@ export const metadata: Metadata = {
   openGraph: {
     title,
     description
-  },
-  twitter: {
-    title,
-    description,
-    card: 'summary_large_image',
-    creator: '@miiura'
   }
 }
 
