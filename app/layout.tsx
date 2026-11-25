@@ -115,7 +115,11 @@ export default async function RootLayout({
     : undefined
 
   return (
-    <html lang="en" suppressHydrationWarning>
+    <html
+      lang="en"
+      suppressHydrationWarning
+      data-space-color={initialSpaceColor || 'black'}
+    >
       <body
         className={cn(
           'fixed inset-0 flex flex-col font-sans antialiased overflow-hidden',

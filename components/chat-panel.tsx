@@ -615,9 +615,9 @@ export function ChatPanel({
 
         <div
           className={cn(
-            'relative flex w-full flex-col gap-2 rounded-3xl border border-input bg-muted transition-[box-shadow] duration-[140ms] ease-[var(--motion-ease-out)]',
+            'relative flex w-full flex-col gap-2 rounded-[32px] border border-input bg-muted transition-[box-shadow,border-color] duration-200 ease-[var(--motion-ease-out)]',
             isInputFocused &&
-              'ring-1 ring-ring/20 ring-offset-1 ring-offset-background/50'
+              'ring-2 ring-[var(--space-current,var(--ring))] shadow-sm border-[var(--space-current,var(--border))]'
           )}
         >
           {contentCards.length > 0 && (
@@ -946,7 +946,8 @@ export function ChatPanel({
                 size={'icon'}
                 className={cn(
                   isLoading && 'animate-pulse',
-                  'size-8 md:size-10 rounded-full'
+                  'size-8 md:size-10 rounded-full transition-colors duration-200',
+                  'space-accent-btn'
                 )}
                 disabled={
                   disabled ||

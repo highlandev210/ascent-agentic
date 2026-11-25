@@ -321,7 +321,7 @@ export function ResearchProcessSection({
       {segments.map((seg, sidx) => {
         const groups = groupConsecutiveParts(seg)
         const isSingle = groups.length === 1 && groups[0].length === 1
-        const containerClass = cn(!isSingle && 'rounded-lg border bg-card')
+        const containerClass = cn(!isSingle && 'rounded-xl border bg-card')
 
         // Count total parts in this segment
         const totalParts = seg.length

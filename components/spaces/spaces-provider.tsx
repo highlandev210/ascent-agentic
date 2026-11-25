@@ -331,6 +331,11 @@ export function SpacesProvider({
     setCookie(SPACE_COLOR_COOKIE, state.active, 365)
   }, [enabled, activeIsReal, state.active])
 
+  useEffect(() => {
+    if (typeof document === 'undefined') return
+    document.documentElement.setAttribute('data-space-color', state.active)
+  }, [state.active])
+
   const finishClose = useCallback(() => {
     const editor = stateRef.current.editor
     if (!editor) return
