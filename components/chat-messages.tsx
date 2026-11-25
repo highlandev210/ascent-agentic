@@ -72,8 +72,11 @@ export function ChatMessages({
     MOBILE_FOLLOW_UP_TOP_CLEARANCE_FALLBACK
   )
 
-  // Tool types definition - moved outside function for performance
-  const toolTypes = ['tool-search', 'tool-fetch', 'tool-askQuestion']
+  // Tool types helper - any tool-* or dynamic-tool part
+  const isCollapsibleTool = (partType?: string): boolean => {
+    if (!partType) return false
+    return partType.startsWith('tool-') || partType === 'dynamic-tool'
+  }
 
   useEffect(() => {
     const container = scrollContainerRef.current
@@ -138,7 +141,7 @@ export function ChatMessages({
     // During streaming, always recalculate
     if (isLoading) {
       const count =
-        message.parts?.filter(part => toolTypes.includes(part.type)).length || 0
+        message.parts?.filter(part => isCollapsibleTool(part.type)).length || 0
       return count
     }
 
@@ -150,7 +153,7 @@ export function ChatMessages({
 
     // Calculate and cache
     const count =
-      message.parts?.filter(part => toolTypes.includes(part.type)).length || 0
+      message.parts?.filter(part => isCollapsibleTool(part.type)).length || 0
     toolCountCacheRef.current.set(message.id, count)
     return count
   }
@@ -167,7 +170,7 @@ export function ChatMessages({
     }
 
     // For tool types, check if there are multiple tools
-    if (partType && toolTypes.includes(partType)) {
+    if (partType && isCollapsibleTool(partType)) {
       const toolCount = getToolCount(message)
       // If multiple tools exist, default to closed
       if (toolCount > 1) {

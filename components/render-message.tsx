@@ -8,11 +8,9 @@ import type {
   UIMessageMetadata,
   UITools
 } from '@/lib/types/ai'
-import type { DynamicToolPart } from '@/lib/types/dynamic-tools'
 
 import { DraftEditNotice } from './draft/draft-card'
 import { AnswerSection } from './answer-section'
-import { DynamicToolDisplay } from './dynamic-tool-display'
 import ResearchProcessSection from './research-process-section'
 import { UserFileSection } from './user-file-section'
 import { UserTextSection } from './user-text-section'
@@ -198,16 +196,12 @@ export function RenderMessage({
           part={part as ToolPart}
         />
       )
-    } else if (part.type === 'reasoning' || part.type?.startsWith?.('tool-')) {
+    } else if (
+      part.type === 'reasoning' ||
+      part.type?.startsWith?.('tool-') ||
+      part.type === 'dynamic-tool'
+    ) {
       buffer.push(part)
-    } else if (part.type === 'dynamic-tool') {
-      flushBuffer(`seg-${index}`)
-      elements.push(
-        <DynamicToolDisplay
-          key={`${messageId}-dynamic-tool-${index}`}
-          part={part as DynamicToolPart}
-        />
-      )
     }
   })
   // Flush tail (no subsequent text)

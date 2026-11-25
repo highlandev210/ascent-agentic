@@ -4,6 +4,7 @@ import { Part, ToolPart } from '@/lib/types/ai'
 
 import { DraftPanel } from '../draft/draft-panel'
 
+import { McpArtifactContent } from './mcp-artifact-content'
 import { ReasoningContent } from './reasoning-content'
 import { TodoInvocationContent } from './todo-invocation-content'
 import { ToolInvocationContent } from './tool-invocation-content'
@@ -31,6 +32,12 @@ export function ArtifactContent({ part }: { part: Part | null }) {
     case 'draft':
       return <DraftPanel />
     default:
+      if (
+        part.type === 'dynamic-tool' ||
+        (typeof part.type === 'string' && part.type.startsWith('tool-'))
+      ) {
+        return <McpArtifactContent tool={part} />
+      }
       return (
         <div className="p-4">Details for this part type are not available</div>
       )

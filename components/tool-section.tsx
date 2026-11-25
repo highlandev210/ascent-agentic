@@ -4,13 +4,14 @@ import { UseChatHelpers } from '@ai-sdk/react'
 
 import type { ToolPart, UIDataTypes, UIMessage, UITools } from '@/lib/types/ai'
 
+import { DynamicToolDisplay } from './dynamic-tool-display'
 import FetchSection from './fetch-section'
 import { QuestionConfirmation } from './question-confirmation'
 import { SearchSection } from './search-section'
 import { ToolTodoDisplay } from './tool-todo-display'
 
 interface ToolSectionProps {
-  tool: ToolPart
+  tool: ToolPart | any
   isOpen: boolean
   onOpenChange: (open: boolean) => void
   status?: UseChatHelpers<UIMessage<unknown, UIDataTypes, UITools>>['status']
@@ -110,6 +111,22 @@ export function ToolSection({
         />
       )
     default:
+      if (
+        tool.type === 'dynamic-tool' ||
+        (typeof tool.type === 'string' && tool.type.startsWith('tool-'))
+      ) {
+        return (
+          <DynamicToolDisplay
+            tool={tool}
+            isOpen={isOpen}
+            onOpenChange={onOpenChange}
+            status={status}
+            borderless={borderless}
+            isFirst={isFirst}
+            isLast={isLast}
+          />
+        )
+      }
       return null
   }
 }

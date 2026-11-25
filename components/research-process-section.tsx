@@ -34,9 +34,9 @@ function isReasoningPart(part: MessagePart): part is ReasoningPart {
   return part.type === 'reasoning'
 }
 
-function isToolPart(part: MessagePart): part is ToolPart {
+function isToolPart(part: MessagePart): part is ToolPart | DynamicToolPart {
   return (
-    (part.type?.startsWith?.('tool-') && part.type !== 'dynamic-tool') ?? false
+    Boolean(part.type?.startsWith?.('tool-')) || part.type === 'dynamic-tool'
   )
 }
 
@@ -219,17 +219,16 @@ function RenderPart({
   }
 
   if (isToolPart(part)) {
+    const toolCallId = (part as any).toolCallId || partId
     const isOpen = isSingle
-      ? getIsOpen(part.toolCallId, part.type, hasSubsequent)
-      : openSectionId === part.toolCallId
+      ? getIsOpen(toolCallId, part.type, hasSubsequent)
+      : openSectionId === toolCallId
 
     return (
       <ToolSection
-        tool={part}
+        tool={part as any}
         isOpen={isOpen}
-        onOpenChange={open =>
-          handleAccordionChange(part.toolCallId, open, isSingle)
-        }
+        onOpenChange={open => handleAccordionChange(toolCallId, open, isSingle)}
         status={status}
         addToolResult={addToolResult}
         borderless={!isSingle}
@@ -340,7 +339,8 @@ export function ResearchProcessSection({
               <div key={`${messageId}-grp-${sidx}-${gidx}`}>
                 {grp.map((part, pidx) => {
                   const partId = isToolPart(part)
-                    ? part.toolCallId
+                    ? (part as any).toolCallId ||
+                      `${messageId}-${part.type}-${sidx}-${gidx}-${pidx}`
                     : `${messageId}-${part.type}-${sidx}-${gidx}-${pidx}`
 
                   return (

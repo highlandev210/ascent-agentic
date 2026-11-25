@@ -5,6 +5,7 @@ import type { fetchTool } from '@/lib/tools/fetch'
 import type { askQuestionTool } from '@/lib/tools/question'
 import type { searchTool } from '@/lib/tools/search'
 import { createTodoTools, type TodoItem } from '@/lib/tools/todo'
+import type { DynamicToolPart } from '@/lib/types/dynamic-tools'
 import type { SearchMode } from '@/lib/types/search'
 
 // Re-export TodoItem for external use
@@ -64,4 +65,9 @@ export type ToolPart<T extends keyof UITools = keyof UITools> = {
 // Opens the chat's draft in the inspector panel; not a message part.
 export type DraftPanelPart = { type: 'draft' }
 
-export type Part = TextPart | ReasoningPart | ToolPart | DraftPanelPart
+export type Part =
+  | TextPart
+  | ReasoningPart
+  | ToolPart
+  | DraftPanelPart
+  | DynamicToolPart

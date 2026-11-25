@@ -80,4 +80,38 @@ describe('RenderMessage', () => {
     ).map(node => node.getAttribute('data-testid'))
     expect(order).toEqual(['research-process', 'answer-section'])
   })
+
+  test('buffers dynamic-tool parts into research process section', () => {
+    const message: UIMessage = {
+      id: 'assistant-msg-dynamic',
+      role: 'assistant',
+      parts: [
+        {
+          type: 'dynamic-tool',
+          toolCallId: 'call-mcp-1',
+          toolName: 'mcp__crunchbase__query_answer',
+          state: 'output-available',
+          input: { query: 'test' },
+          output: { answer: 'found' }
+        } as any,
+        { type: 'text', text: 'Answer after MCP' } as any
+      ]
+    } as UIMessage
+
+    render(
+      <RenderMessage
+        message={message}
+        messageId={message.id}
+        getIsOpen={() => false}
+        onOpenChange={() => {}}
+      />
+    )
+
+    const processSections = screen.getAllByTestId('research-process')
+    expect(processSections).toHaveLength(1)
+    expect(processSections[0]).toHaveTextContent('dynamic-tool')
+    expect(screen.getByTestId('answer-section')).toHaveTextContent(
+      'Answer after MCP'
+    )
+  })
 })

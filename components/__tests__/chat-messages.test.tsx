@@ -26,10 +26,17 @@ vi.mock('../render-message', () => ({
     const hasAnswer = message.parts?.some(
       part => part.type === 'text' && part.text.trim().length > 0
     )
-    const isOpen = getIsOpen('tool-1', 'tool-search', hasAnswer)
+    const toolPart = message.parts?.find(
+      (part: any) =>
+        typeof part.type === 'string' &&
+        (part.type.startsWith('tool-') || part.type === 'dynamic-tool')
+    ) as any
+    const toolId = toolPart?.toolCallId || 'tool-1'
+    const toolType = toolPart?.type || 'tool-search'
+    const isOpen = getIsOpen(toolId, toolType, hasAnswer)
 
     return (
-      <button onClick={() => onOpenChange('tool-1', !isOpen)}>
+      <button onClick={() => onOpenChange(toolId, !isOpen)}>
         {isOpen ? 'Open tool' : 'Closed tool'}
       </button>
     )
@@ -92,4 +99,56 @@ test('closes a single tool when answer text starts streaming', () => {
   const closedTool = screen.getByRole('button', { name: 'Closed tool' })
   fireEvent.click(closedTool)
   expect(screen.getByRole('button', { name: 'Open tool' })).toBeInTheDocument()
+})
+
+test('closes an MCP / dynamic tool when answer text starts streaming', () => {
+  const userMessage = {
+    id: 'user-2',
+    role: 'user',
+    parts: [{ type: 'text', text: 'Ask MCP' }]
+  } as UIMessage
+  const mcpToolPart = {
+    type: 'tool-mcp__crunchbase__query_answer',
+    toolCallId: 'mcp-1',
+    state: 'output-available',
+    input: { query: 'test' },
+    output: { answer: 'found' }
+  } as any
+  const assistantMessage = (answer?: string): UIMessage => ({
+    id: 'assistant-2',
+    role: 'assistant',
+    parts: answer
+      ? [mcpToolPart, { type: 'text', text: answer }]
+      : [mcpToolPart]
+  })
+  const scrollContainerRef = React.createRef<HTMLDivElement>()
+  const sections = (answer?: string) => [
+    {
+      id: 'section-2',
+      userMessage,
+      assistantMessages: [assistantMessage(answer)]
+    }
+  ]
+
+  const { rerender } = render(
+    <ChatMessages
+      sections={sections()}
+      status="streaming"
+      scrollContainerRef={scrollContainerRef}
+    />
+  )
+
+  expect(screen.getByRole('button', { name: 'Open tool' })).toBeInTheDocument()
+
+  rerender(
+    <ChatMessages
+      sections={sections('Answer is ready')}
+      status="streaming"
+      scrollContainerRef={scrollContainerRef}
+    />
+  )
+
+  expect(
+    screen.getByRole('button', { name: 'Closed tool' })
+  ).toBeInTheDocument()
 })
